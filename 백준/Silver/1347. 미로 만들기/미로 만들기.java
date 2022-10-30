@@ -3,7 +3,7 @@ import java.util.ArrayList;
 
 public class Main {
     static int[] dx = {-1, 0, 1, 0};
-    static int[] dy = {0, 1, 0, -1};    
+    static int[] dy = {0, 1, 0, -1};
 
     static char[][] map;
     static boolean[][] visited;
@@ -49,11 +49,13 @@ public class Main {
         }
 
         for (int i = minX; i <= maxX; i++) {
-//            sb = new StringBuilder();
+            sb = new StringBuilder();
             for (int j = minY; j <= maxY; j++){
-                System.out.print(map[i][j]);
+                sb.append(map[i][j]);
             }
-            System.out.println();
+            sb.append("\n");
+            bw.write(sb.toString());
         }
+        bw.flush();
     }
 }
