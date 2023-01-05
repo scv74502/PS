@@ -1,6 +1,6 @@
 def solution(s):
-    answer = []
     dic = dict()
+    answer = []
     for i in range(len(s)):
         if s[i] not in dic:
             answer.append(-1)
