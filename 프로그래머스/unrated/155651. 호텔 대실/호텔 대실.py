@@ -33,6 +33,7 @@ def solution(book_time):
     
     for i in range(0, 24*60+10):
         cumulative_sum += imos[i]
+        # 누적합과 현재 답 중에서 큰 값을 취함
         answer = max(answer, cumulative_sum)
     
     return answer
