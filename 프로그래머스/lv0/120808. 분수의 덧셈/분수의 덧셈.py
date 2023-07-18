@@ -1,6 +1,8 @@
 """
 1. 유클리드 호제법 이용한 최대공약수 찾기 숙지하기
+2. import math 이용하여 math 모듈의 gcd 함수 사용하기
 """
+import math
 
 
 def Euclidean(a, b):
@@ -10,21 +12,9 @@ def Euclidean(a, b):
 
 
 def solution(numer1, denom1, numer2, denom2):
-    answer = []
-    if max(denom1, denom2) % min(denom1, denom2) == 0:
-        mult = max(denom1, denom2) / min(denom1, denom2)
-        if max(denom1, denom2) == denom1:
-            answer.append(numer2 * mult + numer1)
-            answer.append(denom1)
-        else:
-            answer.append(numer1 * mult + numer2)
-            answer.append(denom2)
-            
-    else:
-        answer.append(numer1 * denom2 + numer2 * denom1)
-        answer.append(denom1 * denom2)
+    numer = numer1 * denom2 + numer2 * denom1
+    denom = denom1 * denom2
     
-    div = Euclidean(answer[0], answer[1])
-    answer = [answer[0] / div, answer[1]/ div]
+    gcd = math.gcd(numer, denom)
     
-    return answer
+    return [numer / gcd, denom / gcd]
