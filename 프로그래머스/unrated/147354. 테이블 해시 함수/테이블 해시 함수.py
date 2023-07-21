@@ -1,14 +1,8 @@
 def solution(data, col, row_begin, row_end):
     data.sort(key=lambda x:(x[col-1], -x[0]))
-    answer = 0
     
-    S = []
-    
-    for i in range(row_begin, row_end+1):
-        res = 0
-        for num in data[i-1]:
-            res += num % (i)
-        S.append(res)
+    # 리팩토링 시도
+    S = [sum([num % i for num in data[i-1]]) for i in range(row_begin, row_end+1)]
     # print(S)
     
     # xor 연산 연산자는 ^이다
