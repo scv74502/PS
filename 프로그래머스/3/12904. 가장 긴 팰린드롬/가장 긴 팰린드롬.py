@@ -8,7 +8,8 @@ def solution(s):
 
     for start in range(len(s)):
         for end in range(len(s), start-1, -1):
-            if(isPalindrome(s[start: end])):
+            check = s[start: end]
+            if len(check) > answer and isPalindrome(check):
                 answer = max(answer, end - start)
     
     return answer
