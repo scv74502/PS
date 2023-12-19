@@ -1,3 +1,7 @@
+"""
+라인 체크하는 line_check의 [False] * W 배열 사용하고 순차 탐색하니 시간 초과
+set()을 사용하니 시간 초과 발생하지 않고 통과함!
+"""
 from collections import deque
 
 # 상, 하, 좌, 우
