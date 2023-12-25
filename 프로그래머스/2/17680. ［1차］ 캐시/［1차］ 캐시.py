@@ -1,31 +1,30 @@
-from collections import deque
-
-
 def solution(cacheSize, cities):
+    cache = dict()
     answer = 0
     
-    cache = dict()
-    
-    for city in cities:
-        city = city.lower()
+    for req in cities:
+        req = req.lower()
+        
+        for city in cache:
+            cache[city] += 1
+        
         if cacheSize == 0:
+            return 5 * len(cities)
+        
+        if req not in cache:
             answer += 5
-        elif len(cache) < cacheSize and city not in cache:
-            cache[city] = 0
-            answer += 5
-        elif city in cache:
-            answer += 1
-            cache[city] = 0
+            
+            
+            if len(cache) >= cacheSize:
+                sorted_cache = sorted(cache.items(), key = lambda x:(x[1], x[0]), reverse=True)
+                # print(sorted_cache)
+                sorted_cache.pop(0)
+                cache = dict(sorted_cache)
+                # print(cache)
+                
+            cache[req] = 0
+                
         else:
-            temp = cache.items()
-            temp = sorted(temp, key = lambda x:x[1])
-            if temp:
-                temp.pop()
-            cache = dict(temp)
-            cache[city] = 0
-            answer += 5
-        for key in cache.keys():
-            cache[key] += 1
-        
-        
+            answer += 1
+            cache[req] = 0
     return answer
