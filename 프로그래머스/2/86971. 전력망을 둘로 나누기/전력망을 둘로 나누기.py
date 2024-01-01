@@ -1,34 +1,37 @@
-import copy
+from collections import deque
+
+
 def solution(n, wires):
-    parent = [0] * (n+1)
-    for i in range(1,n+1): #자기 부모는 자신으로 초기화
-        parent[i] = i
-    
-    def find_parent(parent, x): #부모가 누구인지 찾기
-        if parent[x] != x:
-            return find_parent(parent, parent[x])
-        return parent[x]
-    
-    def union_parent(parent, a, b):
-        a = find_parent(parent, a) #a의 부모
-        b = find_parent(parent, b) #b의 부모
-        if a < b:
-            parent[b] = a
-        else:
-            parent[a] = b
- 
-    res = n
-    for i in range(len(wires)):
-        parent_cp = copy.deepcopy(parent)
-        for j in range(len(wires)): #하나씩 간선 끊어보기
-            if i==j:
-                continue
-            a,b = wires[j]
-            union_parent(parent_cp, a, b)
-        
-        for a,b in wires:
-            parent_cp[a] = find_parent(parent_cp, a)    
-            parent_cp[b] = find_parent(parent_cp, b)  
-        res = min(abs(parent_cp.count(parent_cp[wires[i][0]]) - parent_cp.count(parent_cp[wires[i][1]])), res)
-            
+    res = 100
+    graph = [[] for _ in range(n)]
+
+    for i, j in wires:
+        graph[i - 1].append(j - 1)
+        graph[j - 1].append(i - 1)
+
+    def bfs(start: int):
+        visited = [False for _ in range(n)]
+        dq = deque()
+        dq.append(start)
+        cnt = 0
+
+        while dq:
+            cnt += 1
+            cur = dq.popleft()
+            visited[cur] = True
+            for node in graph[cur]:
+                if not visited[node]:
+                    dq.append(node)
+
+        return cnt
+
+    for i, j in wires:
+        graph[i - 1].remove(j - 1)
+        graph[j - 1].remove(i - 1)
+
+        res = min(res, abs(bfs(i - 1) - bfs(j - 1)))
+
+        graph[i - 1].append(j - 1)
+        graph[j - 1].append(i - 1)
+
     return res
