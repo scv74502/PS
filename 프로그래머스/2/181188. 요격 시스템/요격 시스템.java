@@ -19,9 +19,11 @@ class Solution {
         int ce = 0;
         
         for(int[] info:targets){
-            if(info[0] >= ce){
-                answer += 1;
+            // 현재 위치에서 새 미사일의 요격범위 밖이라면(양 끝 지점에서 요격 불가함)
+            if(ce <= info[0]){
+                // 새 미사일을 소비하고, 위치를 현 미사일 범위의 맨 끝으로 옮김(실제로는 끝에서 아주 약간 전의 실수이나, 정수로 표현하기 위해)
                 ce = info[1];
+                answer += 1;
             }
         }
         return answer;
