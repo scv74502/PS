@@ -19,4 +19,5 @@ def solution(word):
             bt()
             sb.pop()
     bt()
-    return bisect(words, word)
+    # return bisect(words, word)
+    return words.index(word) + 1
