@@ -1,33 +1,35 @@
 import java.io.*;
-import java.util.Arrays;
+import java.util.*;
 
 public class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
-        String[] ipt;
+        String[] ipts;
 
-        ipt = br.readLine().split(" ");
-        // n이 번호, k가 아이들 키
-        int[][] nk = new int[Integer.parseInt(ipt[0])][2];
-        String[] nums = br.readLine().split(" ");
-        for(int i = 0; i < Integer.parseInt(ipt[0]); i++){
-            nk[i][0] = i;
-            nk[i][1] = Integer.parseInt(nums[i]);
+        ipts = br.readLine().split(" ");
+        int N, K;
+        N = Integer.parseInt(ipts[0]);
+        K = Integer.parseInt(ipts[1]);
+        int[][] heights = new int[N][2];
+        ipts = br.readLine().split(" ");
+        for(int i = 0; i < N; i++){
+            heights[i][0] = Integer.parseInt(ipts[i]);
+            heights[i][1] = 1;
         }
 
-        int[] arr = new int[nk.length - 1];
-
-        for(int i = 1; i < nk.length; i++){
-            arr[i-1] = nk[i][1] - nk[i-1][1];
+        int[] diff = new int[N-1];
+        for(int i = 1; i < N; i++){
+            diff[i-1] = heights[i][0] - heights[i-1][0];
         }
 
-        Arrays.sort(arr);
+        Arrays.sort(diff);
 
-        int ans = 0;
-        for(int i = 0; i < nk.length - Integer.parseInt(ipt[1]); i++){
-            ans += arr[i];
+        
+        int answer = 0;
+        for(int i = 0; i < N - K; i++){
+            answer += diff[i];
         }
-        System.out.println(ans);
+        System.out.println(answer);
     }
 }
