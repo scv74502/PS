@@ -1,17 +1,19 @@
-
 import java.io.*;
+import java.util.*;
 
 public class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
-        String[] ipt = br.readLine().split(" ");
+        StringBuilder sb = new StringBuilder();
+        String[] ipts;
 
-        int R = Integer.parseInt(ipt[0]);
-        int C = Integer.parseInt(ipt[1]);
+        int R, C;
+        ipts = br.readLine().split(" ");
+        R = Integer.parseInt(ipts[0]);
+        C = Integer.parseInt(ipts[1]);
 
         char[][] map = new char[R][C];
-        char[][] res = new char[R][C];
         for(int i = 0; i < R; i++){
             map[i] = br.readLine().toCharArray();
         }
@@ -21,6 +23,7 @@ public class Main {
 
         int minR = 10, maxR = 0;
         int minC = 10, maxC = 0;
+        Stack<int[]> stack = new Stack<>();
 
         for(int i = 0; i < R; i++){
             for(int j = 0; j < C; j++) {
@@ -34,25 +37,29 @@ public class Main {
                             cnt++;
                         }
                     }
+
                     if(cnt < 3){
-                        res[i][j] = 'X';
+                        map[i][j] = 'X';
 
                         minR = Math.min(minR, i);
                         minC = Math.min(minC, j);
                         maxR = Math.max(maxR,i);
                         maxC = Math.max(maxC, j);
                     } else {
-                        res[i][j] = '.';
+                        stack.push(new int[] {i, j});
                     }
-                } else{
-                    res[i][j] = '.';
                 }
             }
         }
-        StringBuilder sb = new StringBuilder();
+
+        while(!stack.isEmpty()){
+            int[] cur = stack.pop();
+            map[cur[0]][cur[1]] = '.';
+        }
+
         for(int i = minR; i <= maxR; i++){
             for(int j = minC; j <= maxC; j++) {
-                sb.append(res[i][j]);
+                sb.append(map[i][j]);
             }
             sb.append("\n");
         }
@@ -60,4 +67,3 @@ public class Main {
         bw.flush();
     }
 }
-
