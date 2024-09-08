@@ -5,35 +5,42 @@ class Solution {
         // 정답 시간
         int answer = 0;
         
-        // 큐를 생성하고 다리 길이만큼 0을 삽입함
-        Queue<Integer> queue = new LinkedList<>();
-        for(int i = 0; i < bridge_length; i++){
-            queue.offer(0);
-        }
+        // 다리 위 트럭 무게 합
+        int sum = 0;
         
-        // 다리길이가 N이면 N+1 만큼 시간이 걸림에 유의하기
-        // 다리 길이가 1이면 트럭의 대수 + 1만큼 시간이 걸린다
-        if(bridge_length == 1) return truck_weights.length + 1;
-        // 트럭 대수가 한대면 다리 길이 + 1만큼 시간이 걸린다
-        if(truck_weights.length == 1) return bridge_length + 1;
+        // 큐를 생성
+        Queue<Integer> bridge = new LinkedList<>();
         
-        int idx = 0;
-        int curWeight = 0;
-        while(idx < truck_weights.length){
-            curWeight -= queue.poll();
-            answer++;
-            
-            // 현재 다리 무게와 비교하여 트럭을 올릴 수 있을만큼 올림
-            if(curWeight + truck_weights[idx] <= weight){
-                queue.offer(truck_weights[idx]);
-                curWeight += truck_weights[idx];
-                idx++;
-            } else{
-                // 무게를 못 견딜 경우는 0을 추가함
-                queue.offer(0);
-            }
+        // 매 트럭마다 체크하기
+        for(int truck:truck_weights){
+            while(true){
+                // 다리가 비어 있으면
+                if(bridge.isEmpty()){
+                    // 다리에 트럭을 올리고
+                    bridge.offer(truck);
+                    sum += truck;
+                    answer++;   // 트럭이 오르면 시간도 체크함
+                    break;  // while문 종료 후 반복문 다음으로 넘김
+                // 큐의 길이가 다리 길이와 같아면(빈 공간이건 트럭이건 다리 위 칸이 다 찼다면 빼내야 함)
+                } else if(bridge.size() == bridge_length){
+                    sum -= bridge.poll();                }
+                // 다리가 비어있지 않으면
+                else{
+                    if(sum + truck <= weight){
+                        bridge.offer(truck);
+                        sum += truck;
+                        answer++;   // 트럭이 오르면 시간도 체크함
+                        break;  // while문 종료 후 반복문 다음으로 넘김
+                    } else{
+                        bridge.offer(0);                        
+                        answer++;   // 트럭이 오르면 시간도 체크함
+                        // 이 경우는 시간만 증가하고 반복문이 종료되지 않는다는 것 유의하기
+                    }
+                }
+            }            
         }
-        // 마지막 트럭도 다리를 건너는 경우를 생각해야 함
+        // 이 상태는 마지막 트럭이 큐에 있는 상태로 끝난다
+        // 설사 마지막 트럭 바로 앞에 트럭이 있었더라도, 마지막 트럭이 다리를 완전히 건너야 문제의 조건이 끝나므로 무시할 수 있음            
         return answer + bridge_length;
     }
 }
