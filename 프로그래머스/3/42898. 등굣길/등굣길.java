@@ -15,7 +15,7 @@ class Solution{
             for(int j = 1; j <= m; j++){
                 if(i == 1 && j == 1) continue;
                 if(map[i][j] != -1){
-                    dp[i][j] += (dp[i-1][j] + dp[i][j-1])  % 1000000007;
+                    dp[i][j] = (dp[i-1][j] + dp[i][j-1])  % 1000000007;
                 }
             }
         }
