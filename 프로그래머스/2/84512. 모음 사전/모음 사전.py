@@ -1,23 +1,28 @@
 import sys
 from bisect import *
 
+sys.setrecursionlimit(100000000)
 
-def solution(word):
-    sys.setrecursionlimit(100000000)
-    vowels = 'AEIOU'
+
+def solution(word):        
+    vowels = "AEIOU"
     sb = []
     words = []
-    def bt():
-        if len(sb) == 5:
+    
+    def bt():    
+        # 글자가 5글자면 탐색 종료
+        if(len(sb) == 5):            
             words.append(''.join(sb))
             return
         elif sb:
             words.append(''.join(sb))
-
-        for i in range(5):
-            sb.append(vowels[i])
+        
+        for letter in vowels:
+            sb.append(letter)
             bt()
             sb.pop()
+    
     bt()
-    # return bisect(words, word)
-    return words.index(word) + 1
+    #print(words)
+    return bisect(words, word)
+        
