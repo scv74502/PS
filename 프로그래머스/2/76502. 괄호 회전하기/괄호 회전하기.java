@@ -2,74 +2,53 @@ import java.util.*;
 
 
 class Solution {
-    static HashMap<Character, Character> match;
-    // static HashSet<Character> start;
-    // static HashSet<Character> end;
     public int solution(String s) {
-        if(s.length() % 2 == 1) return 0;
-        
         int answer = 0;
         StringBuilder sb = new StringBuilder();
-        String cur;
-        Queue<Character> queue = new LinkedList<>();
-        Stack<Character> stack = new Stack<>();
-        for(int rpt = 0; rpt < s.length(); rpt++){
-            queue.offer(s.charAt(rpt));
-        }
-        
-        match = new HashMap<>();
-        // start = new HashSet<>();
-        // end = new HashSet<>();
-        
-        // match.put('[', ']');
-        // match.put('{', '}');
-        // match.put('(', ')');
-        
-        match.put(']', '[');
-        match.put('}', '{');
-        match.put(')', '(');
-        
-//         start.add('[');
-//         start.add('{');
-//         start.add('(');
-        
-//         end.add(']');
-//         end.add('}');
-//         end.add(')');
-        
+        String cur = s;
         sb.append(s);
+        Stack<Character> stack = new Stack();
         
-        // 길이가 N인 문자열은 N-1번까지 회전시킴, 맨 처음 기본 문자열도 검사해야 함
-        for(int rpt = 0; rpt < s.length(); rpt++){                        
-            // rotate
-            sb.append(sb.substring(0, 1));
-            sb = sb.deleteCharAt(0);
-            
-            // init stack
-            stack.clear();
-            
-            cur = sb.toString();
-            // System.out.println(cur);
-            
-            for(char ch:cur.toCharArray()){                
+        for(int rpt = 0; rpt < s.length(); rpt++) {
+            // System.out.println("cur : "+cur);
+            for(char ch:cur.toCharArray()){
                 if(stack.isEmpty()){
                     stack.push(ch);
                     continue;
                 }
+                else if(ch == ']'){
+                    if(stack.peek() == '['){
+                        stack.pop();
+                        continue;
+                    }
+                } else if(ch == '}'){
+                    if(stack.peek() == '{'){
+                        stack.pop();
+                        continue;
+                    }
+                } else if(ch == ')'){
+                    if(stack.peek() == '('){
+                        stack.pop();
+                        continue;
+                    }
+                } 
                 
-                if(match.get(ch) == stack.peek()){
-                    stack.pop();
-                    continue;
-                }
-                
-                stack.push(ch);
+                stack.push(ch);                
+            }
+            // System.out.println("stack : "+stack);
+            if(stack.isEmpty()){
+                answer++;
             }
             
-            if(stack.isEmpty()){
-               answer++; 
-            }
+            sb.setLength(0);
+            // System.out.println(cur.substring(1));
+            // System.out.println(cur.substring(0, 1));
+            sb.append(cur.substring(1));
+            sb.append(cur.substring(0, 1));
+            cur = sb.toString();
+            // System.out.println("cur : " + cur);
+            stack.clear();
         }
-        
         return answer;
     }
 }
