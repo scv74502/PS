@@ -27,6 +27,7 @@ def bfs(start_y, start_x, end_y, end_x, maps):
 
 def solution(maps):
     n, m = len(maps), len(maps[0])
+    answer = 0
     # 시작, 레버, 종착지의 x, y 좌표
     sy, sx, ly, lx, ey, ex = 0, 0, 0, 0, 0, 0
     for i in range(n):
@@ -38,8 +39,12 @@ def solution(maps):
             elif maps[i][j] == 'L':
                 ly, lx = i, j
 
-    path1 = bfs(sy, sx, ly, lx, maps)
-    path2 = bfs(ly, lx, ey, ex, maps)
-    if path1 == -1 or path2 == -1:
-        return -1
-    return path1 + path2
+    answer += bfs(sy, sx, ly, lx, maps)
+    if answer > -1:
+        temp = bfs(ly, lx, ey, ex, maps)
+        if temp == -1:
+            answer = temp
+        else:
+            answer += temp
+    
+    return answer
