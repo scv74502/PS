@@ -8,24 +8,24 @@ public class Main {
         String[] ipts;
 
         int N = Integer.parseInt(br.readLine());
-        int[] cities = new int[N];
-        int[] distances = new int[N-1];
+        long[] distances = new long[N-1];
+        long[] cities = new long[N];
 
         ipts = br.readLine().split(" ");
         for(int i = 0; i < N-1; i++) {
-            distances[i] = Integer.parseInt(ipts[i]);
+            distances[i] = Long.parseLong(ipts[i]);
         }
 
         ipts = br.readLine().split(" ");
         for(int i = 0; i < N; i++) {
-            cities[i] = Integer.parseInt(ipts[i]);
+            cities[i] = Long.parseLong(ipts[i]);
         }
 
-        int answer = 0;
-        int curPrice = Integer.MAX_VALUE;
+        long answer = 0;
+        long curPrice = Long.MAX_VALUE;
 
         for(int i = 0; i < N-1; i++) {
-            curPrice = Math.min(curPrice, cities[i]);            
+            curPrice = Math.min(curPrice, cities[i]);
             answer += curPrice * distances[i];
         }
 
