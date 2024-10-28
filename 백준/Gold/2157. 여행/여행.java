@@ -12,11 +12,10 @@ public class Main {
         int M = Integer.parseInt(ipts[1]);
         int K = Integer.parseInt(ipts[2]);
 
-        int[][] distance = new int[N+1][M+1];
-        ArrayList<ArrayList<int[]>> adj = new ArrayList<>();
-        for (int i = 0; i <= N; i++) {
-            adj.add(new ArrayList<>());
-        }
+        // N번 도시를 M번째 방문시 점수
+        int[][] dp = new int[N+1][M+1];
+
+        int[][] lines = new int[N+1][N+1];
 
         for (int i = 0; i < K; i++) {
             ipts = br.readLine().split(" ");
@@ -26,29 +25,23 @@ public class Main {
 
             if(a > b) continue;
 
-            // 같은 거리가 여러가지인 경우가 있으므로 최대값 최함
-//            adjList[a][b] = Math.max(c, adjList[a][b]);
-            adj.get(a).add(new int[] {b,c});
+            lines[a][b] = Math.max(lines[a][b], c);
         }
 
-        int nextCity, score;
-
-        // 초기화로 시작, 1번부터 출발하면 도시 2개 여행함
-        for(int[] cur:adj.get(1)){
-            nextCity = cur[0];
-            score = cur[1];
-            distance[nextCity][2] = Math.max(distance[nextCity][2], score);
+        // 초기화, 1번 도시에서 출발하는 경우를 저장함
+        for (int i = 2; i <= N; i++) {
+            dp[i][2] = Math.max(dp[i][2], lines[1][i]);
         }
 
-
-        for(int i = 2; i < M; i++) {
-            for(int j = 2; j <= N; j++) {
-                // 방문한 적 없는 도시는 체크하지 않는다
-                if(distance[j][i] != 0){
-                    for(int[] cur:adj.get(j)){
-                        nextCity = cur[0];
-                        score = cur[1];
-                        distance[nextCity][i+1] = Math.max(distance[nextCity][i+1], distance[j][i] + score);
+        // dp를 이용한 풀이
+        // 2번부터 N번까지 모든 점 순회
+        for(int i = 1; i <= N; i++) {
+            for(int j = 1; j < M; j++) {
+                if(dp[i][j] != 0){
+                    for (int k = 2; k <= N; k++) {
+                        if(lines[i][k] != 0){
+                            dp[k][j+1] = Math.max(dp[k][j+1], dp[i][j] + lines[i][k]);
+                        }
                     }
                 }
             }
@@ -57,9 +50,8 @@ public class Main {
 
         int answer = 0;
         for (int i = 1; i <= M; i++) {
-            answer = Math.max(answer, distance[N][i]);
+            answer = Math.max(answer, dp[N][i]);
         }
-
         System.out.println(answer);
     }
 }
