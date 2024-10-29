@@ -25,17 +25,7 @@ public class Main {
             int joy = Integer.parseInt(ipts[i-1]);
             energyAndJoy[i][1] = joy;
         }
-
-        Arrays.sort(energyAndJoy, new Comparator<int[]>() {
-            @Override
-            public int compare(int[] o1, int[] o2) {
-                if(o1[0] == o2[0]){
-                    return o1[1] - o2[1];
-                }
-                return o1[0] - o2[0];
-            }
-        });
-
+        
         answer = 0;
         bt(1, 100, 0);
         System.out.println(answer);
