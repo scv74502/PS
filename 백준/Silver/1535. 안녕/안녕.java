@@ -1,18 +1,15 @@
 import java.io.*;
-import java.util.Arrays;
-import java.util.Comparator;
+import java.util.*;
 
 public class Main {
-    static int answer, N;
-    static int[][] energyAndJoy;
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
         String[] ipts;
         String ipt;
 
-        N = Integer.parseInt(br.readLine());
-        energyAndJoy = new int[N+1][2];
+        int N = Integer.parseInt(br.readLine());
+        int[][] energyAndJoy = new int[N+1][2];
 
         ipts = br.readLine().split(" ");
         for(int i = 1; i <= N; i++) {
@@ -25,23 +22,22 @@ public class Main {
             int joy = Integer.parseInt(ipts[i-1]);
             energyAndJoy[i][1] = joy;
         }
-        
-        answer = 0;
-        bt(1, 100, 0);
-        System.out.println(answer);
-    }
 
-    public static void bt(int depth, int curEnergy, int curJoy){
-        if(depth == N+1){
-            answer = Math.max(curJoy, answer);
-            return;
+//        System.out.println(Arrays.deepToString(energyAndJoy));
+
+        // 0~99까지 범위, dp[i]는 체력을 i만큼 썼을 때에 느낄 수 있는 최대 기쁨
+        int[] dp = new int[100];
+
+        for(int i = 1; i <= N; i++) {
+            int health = energyAndJoy[i][0];
+            int joy = energyAndJoy[i][1];
+
+            for(int j = 99; j >= health; j--) {
+                dp[j] = Math.max(dp[j], dp[j-health] + joy);
+            }
+
         }
 
-        int nextEnergy = curEnergy - energyAndJoy[depth][0];
-        if(nextEnergy > 0){
-            int nextJoy = curJoy + energyAndJoy[depth][1];
-            bt(depth+1, nextEnergy, nextJoy);
-        }
-        bt(depth+1, curEnergy, curJoy);
+        System.out.println(dp[99]);
     }
 }
