@@ -1,5 +1,4 @@
 import java.io.*;
-import java.util.*;
 
 public class Main {
     public static void main(String[] args) throws IOException {
@@ -19,24 +18,24 @@ public class Main {
             schedule[i][1] = consultPrice;
         }
 
+        // dp[i] -> i일까지밖에 없을 대 최대값
         int[] dp = new int[N+1];
 
         // 첫 날부터 진행, bottom-up
-        for(int i = 0; i < N; i++) {
-            int consultDay = schedule[i][0];
-            int consultPrice = schedule[i][1];
+        for(int i = 1; i <= N; i++) {
+            // 이전까지의 최대값
+            dp[i] = Math.max(dp[i], dp[i-1]);
+            int consultDay = schedule[i-1][0];
+            int consultPrice = schedule[i-1][1];
 
-            // i번 상담을 끝낸 날
-            int consultEndDay = i + consultDay;
-            
-            // 상담 끝낸 날부터 마지막 날까지
-            for (int j = consultEndDay; j <= N; j++) {
-                // 처음에는 비어 있으므로 i번째 날짜에 상담 진행한 금액이 들어옴
-                // 그 후에 다른 값들중 큰 값으로 갱신됨
-                dp[j] = Math.max(dp[j], dp[i] + consultPrice);
+            // 해당 상담을 진행한 마지막 날, 당일을 포함한다
+            int finDay = i + consultDay - 1;
+
+            if(finDay <= N){
+                dp[finDay] = Math.max(dp[finDay], dp[i-1] + consultPrice);
             }
         }
-        
+
         System.out.println(dp[N]);
     }
 }
