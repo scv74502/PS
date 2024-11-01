@@ -1,74 +1,74 @@
-
 import java.io.*;
-
+import java.util.*;
 
 public class Main {
-    public static int N, K;
-    public static int[] hp;
-    public static boolean[] robot;
+    public static int K;
+    public static int[] health;
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
-        String[] ipt;
-        int cnt = 0;
+        String ipt;
+        String[] ipts;
 
-        ipt = br.readLine().split(" ");
-        N = Integer.parseInt(ipt[0]);
-        K = Integer.parseInt(ipt[1]);
-        hp = new int[2 * N];
-        robot = new boolean[N];
+        ipts = br.readLine().split(" ");
+        int N = Integer.parseInt(ipts[0]);
+        K = Integer.parseInt(ipts[1]);
 
-        ipt = br.readLine().split(" ");
-        for(int i = 0; i < hp.length; i++){
-            hp[i] = Integer.parseInt(ipt[i]);
+        health = new int[2 * N];
+        boolean[] robots = new boolean[N];
+        ipts = br.readLine().split(" ");
+        for (int i = 0; i < health.length; i++) {
+            health[i] = Integer.parseInt(ipts[i]);
         }
 
+        int cnt = 0;
+
         while(check()){
-            int temp = hp[hp.length-1]; // 1. 벨트 한 칸 회전
-            for(int i = hp.length-1; i > 0; i--){
-                hp[i] = hp[i-1];
+            // 1. 컨테이너와 로봇 회전시킴
+            // 1.1 컨테이너의 회전
+            int tmpH = health[health.length - 1];
+            for(int i = health.length - 1; i > 0; i--) {
+                health[i] = health[i - 1];
             }
-            hp[0] = temp;
+            health[0] = tmpH;
 
-            // 로봇도 회전시킴
-            for(int i = robot.length - 1; i > 0; i--){
-                robot[i] = robot[i-1];
+            // 1.2 로봇의 회전
+            for(int i = robots.length - 1; i > 0; i--) {
+                robots[i] = robots[i - 1];
             }
-            robot[0] = false;
-
-            robot[N-1] = false;
-            // 2. 로봇 이동 가능하면 이동하기
-            for(int i = N - 1; i > 0; i--){
-                if(robot[i-1] && !robot[i] && hp[i] > 0){
-                    robot[i] = true;
-                    robot[i-1] = false;
-                    hp[i]--;
+            robots[0] = false;  // 맨 처음 자리는 로봇 없어야 함
+            // 로봇이 내리는 위치에 도달하면 즉시 내린다
+            robots[robots.length - 1] = false;
+            // 2. 로봇의 컨베이어 진행방향 전진
+            for(int i = N-1; i > 0; i--) {
+                // 현재칸 내구도가 남아있고 비었으며, 전 칸에 로봇이 있다면
+                if(!robots[i] && health[i] > 0 && robots[i-1]){
+                    // 로봇 한 칸 전진시킴
+                    robots[i] = true;
+                    // 로봇이 닿은 칸 내구도 감소
+                    health[i]--;
+                    // 전 칸은 로봇 비움 처리
+                    robots[i-1] = false;
                 }
             }
 
-            // 3. 올라가는 로봇 위치에 로봇 올리기
-            if(hp[0] > 0){
-                robot[0] = true;
-                hp[0]--;
+            // 3. 올리는 칸의 내구도 남았으면 로봇을 올림
+            if(health[0] > 0){
+                robots[0] = true;
+                health[0]--;
             }
-
             cnt++;
         }
-        bw.write(cnt+"\n");
-
-        br.close();
-        bw.flush();
-        bw.close();
+        System.out.println(cnt);
     }
 
     public static boolean check(){
         int cnt = 0;
-
-        for(int i = 0; i < hp.length; i++){
-            if(hp[i] == 0){ // 0이 된 곳을 카운트함
+        for (int j : health) {
+            if (j == 0) {
                 cnt++;
             }
-            if(cnt >= K) return false;  // 0이 된 곳이 K개 이상이면 조건 통과 실패
+            if (cnt >= K) return false;
         }
         return true;
     }
