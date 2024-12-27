@@ -2,73 +2,122 @@ import java.io.*;
 
 public class Main {
     static int R, C, N;
-    static int[] block;
-    static int[] dx = {-1, 1, 0, 0};    // 상 하 좌 우
-    static int[] dy = {0, 0, -1, 1};    // 상 하 좌 우
-
-    static char[][] map;
-    static int[][] tMap;
+    static char[][] board;
+    // 상 하 좌 우
+    static int[] dr = new int[] {-1, 1, 0, 0};
+    static int[] dc = new int[] {0, 0, -1, 1};
     public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));   // br
-        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out)); // bw
-        String[] ipt;   // string array to get input
-        StringBuilder sb;
-        String getChar;
-        ipt = br.readLine().split(" ");
-        R = Integer.parseInt(ipt[0]);
-        C = Integer.parseInt(ipt[1]);
-        N = Integer.parseInt(ipt[2]);
-
-        map = new char[R][C];
-        tMap = new int[R][C];
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+        String[] ipts = br.readLine().split(" ");
+        R = Integer.parseInt(ipts[0]);
+        C = Integer.parseInt(ipts[1]);
+        N = Integer.parseInt(ipts[2]);
+        board = new char[R][C];
 
         for (int i = 0; i < R; i++) {
-            getChar = br.readLine();
+            board[i] = br.readLine().toCharArray();
+        }
+
+        int second = 0;
+
+
+        // 처음 1초는 아무것도 안 함
+        second++;
+        for (int i = 0; i < R; i++) {
             for (int j = 0; j < C; j++) {
-                map[i][j] = getChar.charAt(j);
-                if(map[i][j] == 'O'){
-                    tMap[i][j] = 3;
+                if(board[i][j] == 'O'){
+                    board[i][j] = '3';
                 }
             }
         }
+        secondElapse();
 
-        int time = 0;
-        while(time++ < N){
-            if(time % 2 == 0){
-                for (int i = 0; i < R; i++) {
-                    for (int j = 0; j < C; j++) {
-                        if(map[i][j] == '.'){
-                            map[i][j] = 'O';
-                            tMap[i][j] = time + 3;
-                        }
-                    }
-                }
-            } else if(time % 2 == 1){
-                for (int i = 0; i < R; i++) {
-                    for (int j = 0; j < C; j++) {
-                        if(tMap[i][j] == time){
-                            map[i][j] = '.';
-                            for(int d = 0; d < 4; d++){
-                                int ni = i + dx[d];
-                                int nj = j + dy[d];
-
-                                if(ni < 0 || nj < 0 || ni >= R || nj >= C) continue;
-
-                                if(map[ni][nj] == 'O' && tMap[ni][nj] != time){
-                                    map[ni][nj] = '.';
-                                    tMap[ni][nj] = 0;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+        // 그 다음에는 폭탄 설치함
+        if(second < N){
+            secondElapse();
+            second++;
+            setBomb();
         }
-        sb = new StringBuilder();
+
+        while(second < N){
+            // 3초가 지났으므로 폭탄이 폭발함
+            second++;
+            secondElapse();
+            explodeBomb();
+            if(second == N) break;
+
+            second++;
+            secondElapse();
+            setBomb();
+            if(second == N) break;
+        }
+
+        // 마지막으로 모양 변경함
+        finalShape();
+
         for (int i = 0; i < R; i++) {
-            sb.append(map[i]).append("\n");
+            for (int j = 0; j < C; j++) {
+                bw.write(board[i][j]);
+            }
+            bw.write("\n");
         }
-        bw.write(sb.toString());
+
         bw.flush();
     }
+
+    // 맵 빈 공간에 폭탄 설치
+    public static void setBomb(){
+        for (int i = 0; i < R; i++) {
+            for (int j = 0; j < C; j++) {
+                if(board[i][j] == '.'){
+                    board[i][j] = '3';
+                }
+            }
+        }
+    }
+
+    // 규칙에 따라 설치된 폭탄들이 터짐
+    public static void explodeBomb(){
+        int nr, nc;
+        for (int i = 0; i < R; i++) {
+            for (int j = 0; j < C; j++) {
+                if(board[i][j] == '0'){
+                    for (int k = 0; k < 4; k++) {
+                        nr = i + dr[k];
+                        nc = j + dc[k];
+
+                        if(0 <= nr && nr < R && 0 <= nc && nc < C && '0' != board[nr][nc]){
+                            board[nr][nc] = '.';
+                        }
+                    }
+                    board[i][j] = '.';
+                }
+            }
+        }
+    }
+
+    // 폭탄들 시간이 감
+    public static void secondElapse(){
+        for(int i = 0; i < R; i++) {
+            for (int j = 0; j < C; j++) {
+                if('1' <= board[i][j] && board[i][j] > '0'){
+                    board[i][j] -= 1;
+                }
+            }
+        }
+    }
+
+
+    // 마지막에 숫자들은 폭탄모양으로 바꿈
+    public static void finalShape(){
+        for(int i = 0; i < R; i++) {
+            for (int j = 0; j < C; j++) {
+                if('1' <= board[i][j] && board[i][j] <= '3'){
+                    board[i][j] = 'O';
+                }
+            }
+        }
+    }
+
 }
