@@ -29,10 +29,8 @@ public class Main {
     }
 
     public static void dfs(int r, int c, int depth, int appleCnt){
-//        System.out.println("r : " + r + ", c : " + c + ", depth : " + depth + ", appleCnt : " + appleCnt);
         if(isPossible) return;
         if(depth >= 3){
-//            System.out.println("finished r : " + r + ", c : " + c + ", depth : " + depth + ", appleCnt : " + appleCnt);
             if(appleCnt >= 2) isPossible = true;
             return;
         }
