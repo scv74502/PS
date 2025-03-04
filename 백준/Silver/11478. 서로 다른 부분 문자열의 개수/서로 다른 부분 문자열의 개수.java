@@ -13,9 +13,7 @@ public class Main {
 
         for (int i = 1; i <= len; i++) {
             for (int j = 0; j <= len - i; j++) {
-                if(!hs.contains(str.substring(j, j + i))){
-                    hs.add(str.substring(j, j + i));
-                }
+                hs.add(str.substring(j, j + i));
             }
         }
 
