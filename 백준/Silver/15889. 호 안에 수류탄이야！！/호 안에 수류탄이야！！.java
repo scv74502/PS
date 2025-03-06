@@ -12,7 +12,7 @@ public class Main {
             System.out.println("권병장님, 중대장님이 찾으십니다");
             return;
         }
-        
+
         int[] soldiers = new int[N];
         int[] ranges = new int[N - 1];
 
@@ -26,23 +26,15 @@ public class Main {
             ranges[i] = Integer.parseInt(ipts[i]);
         }
 
-        boolean[] reachable = new boolean[N];
-        reachable[0] = true;
+        int maxLen = 0;
 
         for (int i = 0; i < N-1; i++) {
-            if(!reachable[i]) continue;
-            int reach = soldiers[i] + ranges[i];
-            for (int j = i+1; j < N; j++) {
-                if(soldiers[j] <= reach) reachable[j] = true;
-            }
-
-            if(reachable[N-1]){
-                System.out.println("권병장님, 중대장님이 찾으십니다");
-                return;
+            if(maxLen >= soldiers[i]) {
+                maxLen = Math.max(maxLen, soldiers[i] + ranges[i]);
             }
         }
 
-        if(reachable[N-1]){
+        if(maxLen >= soldiers[N-1]){
             System.out.println("권병장님, 중대장님이 찾으십니다");
         } else{
             System.out.println("엄마 나 전역 늦어질 것 같아");
