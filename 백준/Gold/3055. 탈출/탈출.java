@@ -1,94 +1,91 @@
 import java.io.*;
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.ArrayDeque;
 import java.util.StringTokenizer;
 
 public class Main {
     static int[] dr = {-1, 1, 0, 0};
-    static int[] dc = { 0, 0, -1, 1 };
+    static int[] dc = {0, 0, -1, 1};
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
-        StringTokenizer stringTokenizer =  new StringTokenizer(br.readLine());
-        int N = Integer.parseInt(stringTokenizer.nextToken());
-        int M = Integer.parseInt(stringTokenizer.nextToken());
+        StringTokenizer stringTokenizer = new StringTokenizer(br.readLine());
+        int R = Integer.parseInt(stringTokenizer.nextToken());
+        int C = Integer.parseInt(stringTokenizer.nextToken());
 
-        char[][] map = new char[N][M];
-        boolean[][] visited = new boolean[N][M];
+        char[][] map = new char[R][C];
+        boolean[][] visited = new boolean[R][C];
         int startR = 0, startC = 0, endR = 0, endC = 0;
-        Queue<int[]> waterQueue = new LinkedList<>();
-        for (int i = 0; i < N; i++) {
+        ArrayDeque<int[]> waterQueue = new ArrayDeque<>();
+        ArrayDeque<int[]> queue = new ArrayDeque<>();
+
+        for (int i = 0; i < R; i++) {
             String ipt = br.readLine();
-            for (int j = 0; j < ipt.length(); j++) {
+            for (int j = 0; j < C; j++) {
                 map[i][j] = ipt.charAt(j);
-                if(map[i][j] == 'S') {
+                if(map[i][j] == 'S'){
                     startR = i;
                     startC = j;
+                    queue.add(new int[] {startR, startC, 0});
+                    visited[i][j] = true;
                 }
 
-                if(map[i][j] == 'D') {
+                if(map[i][j] == 'D'){
                     endR = i;
                     endC = j;
                 }
 
                 if(map[i][j] == '*'){
                     waterQueue.add(new int[] {i, j});
+                    visited[i][j] = true;
                 }
             }
         }
 
-        Queue<int[]> queue = new LinkedList<>();
-        queue.add(new int[] {startR, startC, 0});
-        visited[startR][startC] = true;
-
-        boolean isEscaped = false;
-        int time = 0;
-
-        while(!queue.isEmpty()) {
-            int curWater = waterQueue.size();
-            for (int i = 0; i < curWater; i++) {
+        while(!queue.isEmpty()){
+            int waterQueueSize = waterQueue.size();
+            for (int i = 0; i < waterQueueSize; i++) {
                 int[] cur = waterQueue.poll();
-                int cwr = cur[0];
-                int cwc = cur[1];
+                int cr = cur[0];
+                int cc = cur[1];
 
-                for (int j = 0; j < 4; j++) {
-                    int nwr = cwr + dr[j];
-                    int nwc = cwc + dc[j];
+                for (int d = 0; d < 4; d++) {
+                    int nr = cr + dr[d];
+                    int nc = cc + dc[d];
 
-                    if(0 <= nwc && nwc < M && 0 <= nwr && nwr < N && map[nwr][nwc] == '.') {
-                        map[nwr][nwc] = '*';
-                        waterQueue.add(new int[] {nwr, nwc});
+                    if(0 <= nr && 0 <= nc && nr < R && nc < C){
+                        if(map[nr][nc] == '.'){
+                            waterQueue.add(new int[] {nr, nc});
+                            map[nr][nc] = '*';
+                        }
                     }
                 }
             }
 
-            int curHedgehog = queue.size();
-            for (int i = 0; i < curHedgehog; i++) {
+            int queueSize = queue.size();
+            for (int i = 0; i < queueSize; i++) {
                 int[] cur = queue.poll();
                 int cr = cur[0];
                 int cc = cur[1];
-                int cTurn = cur[2];
+                int cTime = cur[2];
 
                 if(cr == endR && cc == endC){
-                    isEscaped = true;
-                    System.out.println(time);
+                    System.out.println(cTime);
                     return;
                 }
 
-                for (int j = 0; j < 4; j++) {
-                    int nr = cr + dr[j];
-                    int nc = cc + dc[j];
+                for (int d = 0; d < 4; d++) {
+                    int nr = cr + dr[d];
+                    int nc = cc + dc[d];
 
-                    if(0 <= nc && nc < M && 0 <= nr && nr < N && !visited[nr][nc]) {
-                        if(map[nr][nc] == '.' || map[nr][nc] == 'D'){
-                            queue.add(new int[] {nr, nc, cTurn + 1});
+                    if(0 <= nr && 0 <= nc && nr < R && nc < C){
+                        if(!visited[nr][nc] && map[nr][nc] == '.' || map[nr][nc] == 'D'){
+                            queue.add(new int[] {nr, nc, cTime+1});
                             visited[nr][nc] = true;
                         }
                     }
                 }
             }
-            time++;
         }
 
         System.out.println("KAKTUS");
