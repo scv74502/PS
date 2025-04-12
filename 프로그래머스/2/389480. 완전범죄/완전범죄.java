@@ -2,34 +2,44 @@ import java.util.*;
 
 class Solution {
     public int solution(int[][] info, int n, int m) {
-        int[][] dp = new int[info.length + 1][m];
-        final int INF = 1000000;
+        int maxChance = Math.max(n, m);
+        boolean[][][] dp = new boolean[info.length + 1][n][m];
+        dp[0][0][0] = true;
         
-        for(int i = 0; i <= info.length; i++){
-            Arrays.fill(dp[i], 1000000);
+        int aAdd = 0;
+        int bAdd = 0;
+        
+        for(int i = 0; i < info.length; i++){                        
+            aAdd = info[i][0];
+            bAdd = info[i][1];
+            for(int j = 0; j < n; j++){
+                for(int k = 0; k < m; k++){
+                    if(!dp[i][j][k]) continue;
+                    
+                    int nextA = j + aAdd;
+                    int nextB = k + bAdd;
+                    
+                    if(nextA < n){
+                        dp[i+1][nextA][k] = true;
+                    }
+                    
+                    if(nextB < m){
+                        dp[i+1][j][nextB] = true;
+                    }
+                }                
+            }            
         }
-        
-        dp[0][0] = 0;
-        
-        for(int i = 1; i <= info.length; i++){
-            int a = info[i-1][0];
-            int b = info[i-1][1];
-            
-            for(int j = 0; j < m; j++){
-                dp[i][j] = Math.min(dp[i][j], dp[i-1][j] + a);
                 
-                if(j + b < m){
-                    dp[i][j + b] = Math.min(dp[i][j + b], dp[i-1][j]);
+        // System.out.println(Arrays.deepToString(dp));
+        
+        for(int j = 0; j < n; j++){
+            for(int k = 0; k < m; k++){
+                if(dp[info.length][j][k]){
+                    return j;
                 }
             }
         }
-        
-        int answer = Integer.MAX_VALUE;
-        
-        for(int j = 0; j < m; j++){
-            answer = Math.min(answer, dp[info.length][j]);
-        }
-        
-        return answer >= n ? -1 : answer;
+                        
+        return -1;
     }
 }
