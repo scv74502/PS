@@ -1,5 +1,6 @@
 import java.io.*;
-import java.util.*;
+import java.util.Arrays;
+import java.util.StringTokenizer;
 
 public class Main {
     public static void main(String[] args) throws IOException {
@@ -14,9 +15,9 @@ public class Main {
 
         int[] costs = new int[N];
         int[] values = new int[N];
-        int[] dp = new int[MAXIMUM_BOUND];  // 비용이 i일 때 최대 고객
-//        Arrays.fill(dp, 100001);
-//        dp[0] = 0;
+        int[] dp = new int[C + 101];  // 고객이 i명일때 최소 비용
+        Arrays.fill(dp, MAXIMUM_BOUND);
+        dp[0] = 0;
 
         for (int i = 0; i < N; i++) {
             st = new StringTokenizer(br.readLine());
@@ -24,23 +25,21 @@ public class Main {
             values[i] = Integer.parseInt(st.nextToken());
         }
 
-        for (int i = 0; i < N; i++){
+        for (int i = 0; i < N; i++) {
             int cost = costs[i];
-            for (int j = cost; j < MAXIMUM_BOUND; j++) {
-                dp[j] = Math.max(dp[j] ,dp[j - cost] + values[i]);
+            int value = values[i];
+
+            for (int j = value; j < C+101; j++) {
+                dp[j] = Math.min(dp[j], dp[j - value] + cost);
             }
         }
 
-        int answer = 0;
+        int answer = Integer.MAX_VALUE;
 
-        for (int i = 1; i < MAXIMUM_BOUND; i++) {
-            if(dp[i] >= C){
-                answer = i;
-                break;
-            }
+        for (int i = C; i < C+101; i++) {
+            answer = Math.min(answer, dp[i]);
         }
 
-//        System.out.println(Arrays.toString(dp));
         System.out.println(answer);
     }
 }
