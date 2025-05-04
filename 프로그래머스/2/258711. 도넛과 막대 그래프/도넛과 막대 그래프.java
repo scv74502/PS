@@ -30,7 +30,7 @@ class Solution {
                 answer[2] += 1;
             } 
             
-            else if (inCnt[i] >= 2 && outCnt[i] == 2){  // 막대 그래프
+            else if (inCnt[i] >= 2 && outCnt[i] == 2){  // 8자 그래프
                 answer[3] += 1;
             } 
         }
