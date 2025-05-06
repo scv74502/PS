@@ -10,45 +10,42 @@ public class Main {
         int N = Integer.parseInt(st.nextToken());
         int M = Integer.parseInt(st.nextToken());
 
-        HashMap<Integer, Integer> ladderAndSnake = new HashMap<>(N+M+1);
+        HashMap<Integer, Integer> ladderAndSnake = new HashMap<>();
 
-        for (int i = 0; i < N+M; i++) {
+        for (int i = 0; i < N + M; i++) {
             st = new StringTokenizer(br.readLine());
+
             int u = Integer.parseInt(st.nextToken());
             int v = Integer.parseInt(st.nextToken());
-
             ladderAndSnake.put(u, v);
         }
 
-        Queue<Integer> queue = new ArrayDeque<>();
-        queue.add(1);
-        int answer = Integer.MAX_VALUE;
-
         int[] visitCnt = new int[101];
-        Arrays.fill(visitCnt, -1);
+        Arrays.fill(visitCnt, Integer.MAX_VALUE);
         visitCnt[1] = 0;
 
-        while(!queue.isEmpty()){
-            int curLoc = queue.poll();
+        Queue<Integer> queue = new ArrayDeque<>();
+        queue.add(1);
 
-            if(curLoc == 100){
+        while(!queue.isEmpty()){
+            int cur = queue.poll();
+
+            if(cur == 100){
                 break;
             }
 
-            for (int i = 1; i <= 6; i++) {
-                int nextLoc = curLoc + i;
+            for (int dice = 1; dice <= 6; dice++) {
+                int next = cur + dice;
+                if(next > 100) continue;
 
-                if(nextLoc > 100) continue;
-
-
-                if(ladderAndSnake.containsKey(nextLoc)){
-                    nextLoc = ladderAndSnake.get(nextLoc);
+                if(ladderAndSnake.containsKey(next)){
+                    next = ladderAndSnake.get(next);
                 }
 
-                if(visitCnt[nextLoc] == -1){
-                    visitCnt[nextLoc] = visitCnt[curLoc] + 1;
-                    queue.add(nextLoc);
-                }
+                if(visitCnt[cur] + 1 >= visitCnt[next]) continue;
+
+                visitCnt[next] = visitCnt[cur] + 1;
+                queue.add(next);
             }
         }
 
