@@ -12,6 +12,7 @@ public class Main {
         long newScore = Long.parseLong(st.nextToken());
         int P = Integer.parseInt(st.nextToken());
 
+        // P는 1 이상 자연수이므로 리스트가 비었으면 무조건 1등
         if(N == 0){
             System.out.println(1);
             return;
@@ -23,6 +24,7 @@ public class Main {
             scores[i] = Long.parseLong(st.nextToken());
         }
 
+        // 리스트가 차 있는데 현재 꼴지보다 작거나 같으면 자리 없음
         if(N == P){
             if(scores[N-1] >= newScore){
                 System.out.println(-1);
@@ -30,6 +32,7 @@ public class Main {
             }
         }
 
+        // 1등부터 시작
         int rank = 1;
 
         for (int i = 0; i < N; i++) {
