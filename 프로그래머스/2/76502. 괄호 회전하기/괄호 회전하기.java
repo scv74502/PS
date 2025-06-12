@@ -1,54 +1,35 @@
 import java.util.*;
 
-
 class Solution {
     public int solution(String s) {
         int answer = 0;
-        StringBuilder sb = new StringBuilder();
-        String cur = s;
-        sb.append(s);
-        Stack<Character> stack = new Stack();
         
-        for(int rpt = 0; rpt < s.length(); rpt++) {
-            // System.out.println("cur : "+cur);
-            for(char ch:cur.toCharArray()){
-                if(stack.isEmpty()){
-                    stack.push(ch);
-                    continue;
-                }
-                else if(ch == ']'){
-                    if(stack.peek() == '['){
-                        stack.pop();
-                        continue;
-                    }
-                } else if(ch == '}'){
-                    if(stack.peek() == '{'){
-                        stack.pop();
-                        continue;
-                    }
-                } else if(ch == ')'){
-                    if(stack.peek() == '('){
-                        stack.pop();
-                        continue;
-                    }
-                } 
-                
-                stack.push(ch);                
-            }
-            // System.out.println("stack : "+stack);
-            if(stack.isEmpty()){
-                answer++;
-            }
-            
-            sb.setLength(0);
-            // System.out.println(cur.substring(1));
-            // System.out.println(cur.substring(0, 1));
-            sb.append(cur.substring(1));
-            sb.append(cur.substring(0, 1));
-            cur = sb.toString();
-            // System.out.println("cur : " + cur);
-            stack.clear();
+        for(int i = 0; i < s.length(); i++){        
+            if(isValidString(s)) answer++;
+            s = rotateString(s);
         }
+        
         return answer;
+    }
+    
+    public boolean isValidString(String str){
+        Stack<Character> stack = new Stack<>();
+        for(char ch: str.toCharArray()){
+            if(ch == '(' || ch == '{' || ch == '['){
+                stack.add(ch);
+            } else{
+                if(stack.isEmpty()) return false;
+                
+                if(ch == ')' && stack.peek() == '(') stack.pop();
+                else if(ch == '}' && stack.peek() == '{') stack.pop();
+                else if(ch == ']' && stack.peek() == '[') stack.pop();
+                else break;
+            }
+        }
+        return stack.isEmpty();
+    }
+    
+    public String rotateString(String str){
+        return str.substring(1, str.length()) + str.charAt(0);
     }
 }
