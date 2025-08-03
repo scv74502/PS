@@ -1,6 +1,6 @@
 # [level 0] 배열의 길이에 따라 다른 연산하기 - 181854 
 
-[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/181854?language=python3) 
+[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/181854) 
 
 ### 성능 요약
 
@@ -16,7 +16,7 @@
 
 ### 제출 일자
 
-2025년 08월 03일 22:27:05
+2025년 08월 03일 22:27:53
 
 ### 문제 설명
 
