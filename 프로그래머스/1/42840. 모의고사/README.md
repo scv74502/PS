@@ -1,10 +1,10 @@
 # [level 1] 모의고사 - 42840 
 
-[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/42840?language=java) 
+[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/42840) 
 
 ### 성능 요약
 
-메모리: 91.1 MB, 시간: 1.39 ms
+메모리: 9.3 MB, 시간: 4.35 ms
 
 ### 구분
 
@@ -16,7 +16,7 @@
 
 ### 제출 일자
 
-2025년 06월 10일 17:37:32
+2025년 08월 18일 22:43:00
 
 ### 문제 설명
 
