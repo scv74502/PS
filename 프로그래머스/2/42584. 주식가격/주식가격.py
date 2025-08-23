@@ -1,19 +1,30 @@
 def solution(prices):
-    # 1 2 3 2 3
-    # [0, 1, 2, 3, 2, 3]
-    n = len(prices)
-    answer = [0 for _ in range(n)]
+    N = len(prices)
+    answer = [0 for _ in range(len(prices))]
     stack = [0]
     
-    for i in range(1, n):
+    for i in range(1, len(prices)):
         price = prices[i]
+        
+        if price >= prices[stack[-1]]:
+            stack.append(i)
+            continue
+        
+        # print(price, stack[-1])
         while stack and price < prices[stack[-1]]:
-            j = stack.pop()
-            answer[j] = i - j
+            idx = stack.pop()
+            answer[idx] = i - idx
+        
         stack.append(i)
+        
+        # print(i, ":", stack)
+        # print(i, ":", answer)
+    
+    # print("out:", stack)
+    # print("out:", answer)
     
     while stack:
-        j = stack.pop()
-        answer[j] = n - 1 - j
-        
+        idx = stack.pop()
+        answer[idx] = N - idx - 1
+    
     return answer
