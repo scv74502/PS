@@ -1,59 +1,52 @@
 from collections import deque
 
+def solution(maps):
+    answer = 0
+    N, M = len(maps), len(maps[0])
+    start_r, start_c, lever_r, lever_c, end_r, end_c = 0, 0, 0, 0, 0, 0
+    for i in range(N):
+        for j in range(M):
+            if maps[i][j] == "S":
+                start_r, start_c = i, j
+            elif maps[i][j] == "L":
+                lever_r, lever_c = i, j
+            elif maps[i][j] == "E":
+                end_r, end_c = i, j
+    
+    start_to_lever = bfs(start_r, start_c, lever_r, lever_c, maps)
+    # print(start_to_lever)
+    if start_to_lever == -1:
+        return -1
+    
+    lever_to_end = bfs(lever_r, lever_c, end_r, end_c, maps)
+    # print(lever_to_end)
+    if lever_to_end == -1:
+        return -1
+    
+    return start_to_lever + lever_to_end
 
 def bfs(start_r, start_c, end_r, end_c, maps):
-    row = len(maps)
-    col = len(maps[0])
-    visited = [[False for _ in range(col)] for __ in range(row)]
+    dr = [-1, 1, 0, 0]
+    dc = [0, 0, -1, 1]
     
-    # 상 하 좌 우
-    mr = [-1, 1, 0, 0]
-    mc = [0, 0, -1, 1]
-    
+    N, M = len(maps), len(maps[0])
+    visited = [[False for _ in range(M)] for __ in range(N)]
     dq = deque()
     dq.append([start_r, start_c, 0])
     visited[start_r][start_c] = True
     
     while dq:
         cr, cc, cd = dq.popleft()
+        # print(cr, cc, cd)
         if cr == end_r and cc == end_c:
             return cd
         
-        for mv in range(4):
-            nr, nc = cr + mr[mv], cc + mc[mv]
-            if nr < 0 or row <= nr or nc < 0 or col <= nc:
+        for i in range(4):
+            nr, nc = cr + dr[i], cc + dc[i]
+            if not (0 <= nr < N) or not (0 <= nc < M) or visited[nr][nc] or maps[nr][nc] == "X":
                 continue
-            if maps[nr][nc] != 'X' and not visited[nr][nc]:
-                visited[nr][nc] = True
-                dq.append([nr, nc, cd + 1])
+            dq.append([nr, nc, cd + 1])
+            visited[nr][nc] = True
+        
     return -1
-
-def solution(maps):
-    answer = 0
-    row = len(maps)
-    col = len(maps[0])
-    startRow, startCol, leverRow, leverCol, endRow, endCol = 0, 0, 0, 0, 0, 0
     
-    for i in range(0, row):
-        for j in range(0, col):
-            if maps[i][j] == 'S':
-                startRow, startCol = i, j
-            if maps[i][j] == 'L':
-                leverRow, leverCol = i, j
-            if maps[i][j] == 'E':
-                endRow, endCol = i, j
-    # print(startRow, startCol, leverRow, leverCol, endRow, endCol)
-    
-    answer = bfs(startRow, startCol, leverRow, leverCol, maps)
-    # print(answer)
-    if answer > -1:        
-        temp = bfs(leverRow, leverCol, endRow, endCol, maps)    
-        if temp > -1:
-            answer += temp
-        else:
-            answer = temp
-    return answer
-            
-                
-    
-    return answer
