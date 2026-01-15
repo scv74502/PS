@@ -4,44 +4,39 @@ class Solution {
     private int answer;
     public int solution(int n, int[][] q, int[] ans) {
         answer = 0;
-        dfs(1, n, 0, new ArrayList<Integer>(), q, ans);
+        dfs(1, n, 0, new ArrayList<>(), q, ans);        
         return answer;
     }
     
-    /**
-        start: 수열 범위에서 시작 숫자
-        n: 수열 범위에서 마지막 숫자(문제에서 입력받음)
-        count: 현재 체크하는 배열의 숫자
-        numbers: 현재 배열
-        q: q[i]는 i번째 시도, q[i][j]는 i번째 시도에서 j번째 숫자
-        ans: ans[i]는 i번째 시도에서 비밀 코드와 일치한 숫자
-    **/
-    private void dfs(int start, int n, int count, ArrayList<Integer> numbers, int[][] q, int[] ans){
-        // 5개의 수가 되면 답 체크하고 종료하기
-        if(count == 5){
-            checkAnswer(numbers, q, ans);
+    // 반복문의 시작하는 수, 비밀 코드의 최대 수, 현재 깊이, 비밀 코드 후보군의 수들, 질의 정보, 정답 정보
+    public void dfs(int start, int n, int depth, ArrayList<Integer> curNumbers, int[][] q, int[] ans){
+        if(depth == 5){
+            checkAns(curNumbers, q, ans);
             return;
         }
         
         for(int i = start; i <= n; i++){
-            numbers.add(i);
-            dfs(i + 1, n, count + 1, numbers, q, ans);
-            numbers.remove(numbers.size() - 1);
+            curNumbers.add(i);
+            dfs(i + 1, n, depth + 1, curNumbers, q, ans);
+            curNumbers.remove(curNumbers.size() - 1);
         }
     }
     
-    private void checkAnswer(ArrayList<Integer> numbers, int[][] q, int[] ans){
-        HashSet<Integer> set = new HashSet<>(numbers);
+    public void checkAns(ArrayList<Integer> curNumbers, int[][] q, int[] ans){
+        HashSet<Integer> numbers = new HashSet<>(curNumbers);     
+        // System.out.println(numbers);
         
         for(int i = 0; i < q.length; i++){
-            int[] code = q[i];
-            int matching = 0;
-            
-            for(int number: code){
-                if(set.contains(number)) matching++;
+            int matchNumberAmount = 0;        
+            for(int j = 0; j < 5; j++){
+                
+                if(numbers.contains(q[i][j])){
+                    matchNumberAmount++;
+                }
             }
             
-            if(matching != ans[i]) return;
+            
+            if(ans[i] != matchNumberAmount) return;
         }
         
         answer++;

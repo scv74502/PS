@@ -1,10 +1,10 @@
 # [level 2] 비밀 코드 해독 - 388352 
 
-[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/388352#qna) 
+[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/388352) 
 
 ### 성능 요약
 
-메모리: 97.8 MB, 시간: 65.60 ms
+메모리: 109 MB, 시간: 130.06 ms
 
 ### 구분
 
@@ -16,7 +16,7 @@
 
 ### 제출 일자
 
-2026년 01월 14일 11:46:28
+2026년 01월 15일 12:05:22
 
 ### 문제 설명
 
