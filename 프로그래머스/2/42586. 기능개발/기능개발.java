@@ -2,37 +2,36 @@ import java.util.*;
 
 class Solution {
     public int[] solution(int[] progresses, int[] speeds) {
-        Queue<int[]> queue = new ArrayDeque<>();
+        Queue<int[]> queue = new LinkedList<>();
+        ArrayList<Integer> deployedPerDay = new ArrayList<>();
         
         for(int i = 0; i < progresses.length; i++){
             queue.add(new int[] {progresses[i], i});
         }
         
-        ArrayList<Integer> deployedPerDay = new ArrayList<>();
+        int curDeployIdx = 0;
         
         while(!queue.isEmpty()){
-            int rpt = queue.size();                       
-            for(int i = 0; i < rpt; i++){
-                int[] curProgress = queue.poll();
-                curProgress[0] += speeds[curProgress[1]];                                                
-                queue.add(curProgress);
-            }
-            
+            int queueSize = queue.size();
             int deployed = 0;
-            
-            while(!queue.isEmpty() && queue.peek()[0] >= 100) {
-                queue.poll();
-                deployed++;
+
+            for(int i = 0; i < queueSize; i++){
+                int[] curInfo = queue.poll();
+                curInfo[0] += speeds[curInfo[1]];
+                
+                if (curInfo[0] >= 100 && curDeployIdx == curInfo[1]){
+                    curDeployIdx++;
+                    deployed++;
+                } else {
+                    queue.add(curInfo);
+                }
             }
             if(deployed > 0) deployedPerDay.add(deployed);
-        }                        
-        
-        
-        // System.out.println(deployedPerDay);
-        
+        }
+            
         int[] answer = new int[deployedPerDay.size()];
         
-        for(int i = 0; i < deployedPerDay.size(); i++){
+        for(int i = 0; i < answer.length; i++){
             answer[i] = deployedPerDay.get(i);
         }
         
