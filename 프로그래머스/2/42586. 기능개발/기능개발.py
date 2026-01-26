@@ -1,28 +1,20 @@
-from collections import deque
+import math
 
 def solution(progresses, speeds):
-    N = len(progresses)
-    
-    progresses = deque(progresses)
+    n = len(progresses)
+    left_day = [math.ceil((100 - progresses[i]) / speeds[i]) for i in range(n)]  # 올림 연산
     answer = []
-    finished_job = 0
-    finished_idx = 0
-    cur_turn = 0
     
-    while finished_job < N:
-        cur_turn += 1
-        finished_cur_turn = 0
-        for i in range(N):
-            cur_progress = progresses.popleft()                        
-            if cur_progress >= 100 and i == finished_idx:
-                finished_job += 1
-                finished_idx += 1
-                finished_cur_turn += 1
-            else:
-                cur_progress += speeds[i]
-            progresses.append(cur_progress)
-        
-        if finished_cur_turn > 0:
-            answer.append(finished_cur_turn)                            
+    longest_day = left_day[0]
+    count = 0
     
+    for i in range(n):        
+        if longest_day >= left_day[i]:
+            count += 1
+        else:
+            answer.append(count)
+            count = 1
+            longest_day = left_day[i] 
+    
+    answer.append(count)    
     return answer
