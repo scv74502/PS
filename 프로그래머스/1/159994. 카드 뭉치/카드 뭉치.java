@@ -1,38 +1,32 @@
 import java.util.*;
 
 class Solution {
-    public String solution(String[] cards1, String[] cards2, String[] goal) {        
-        int idx = 0;
-        int cards = cards1.length + cards2.length;
-        int words = goal.length;
+    public String solution(String[] cards1, String[] cards2, String[] goal) {
+        Queue<Integer> cards1Queue = new LinkedList<>();
+        Queue<Integer> cards2Queue = new LinkedList<>();
         
-        Queue<String> cardsQueue1 = new ArrayDeque<>();
-        Queue<String> cardsQueue2 = new ArrayDeque<>();
-        
-        for(String card: cards1){
-            cardsQueue1.add(card);
+        for(int i = 0; i < cards1.length; i++){
+            cards1Queue.add(i);
         }
         
-        for(String card: cards2){
-            cardsQueue2.add(card);
+        for(int i = 0; i < cards2.length; i++){
+            cards2Queue.add(i);
         }
         
-        while(idx < goal.length || (!cardsQueue1.isEmpty() && cardsQueue2.isEmpty())){
-            if(!cardsQueue1.isEmpty() && cardsQueue1.peek().equals(goal[idx])){
-                cardsQueue1.poll();                
-            } else if (!cardsQueue2.isEmpty() && cardsQueue2.peek().equals(goal[idx])){
-                cardsQueue2.poll();                
+        int goalIdx = 0;
+        
+        while(goalIdx < goal.length){
+            if(!cards1Queue.isEmpty() && cards1[cards1Queue.peek()].equals(goal[goalIdx])){
+                cards1Queue.poll();
+            } else if(!cards2Queue.isEmpty() && cards2[cards2Queue.peek()].equals(goal[goalIdx])){
+                cards2Queue.poll();
+            } else{
+                return "No";
             }
-            idx++;
-            
-            if(idx == goal.length) break;
+            goalIdx++;
         }
         
-        if(words == cards - cardsQueue1.size() - cardsQueue2.size()) {
-            return "Yes";
-        } else { 
-            return "No";
-        }
-            
+
+        return "Yes";
     }
 }
