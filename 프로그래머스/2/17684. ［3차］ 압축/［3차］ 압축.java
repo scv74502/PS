@@ -2,57 +2,47 @@ import java.util.*;
 
 class Solution {
     public int[] solution(String msg) {
-        ArrayList<Integer> answer = new ArrayList<>();
+        HashMap<String, Integer> chMap = new HashMap<>();
+        ArrayList<Integer> resultList = new ArrayList<>();
         
-        int msg_idx = 0;
-        int cursor = 0;
-        int hm_idx = 'Z'-'A';
-        String key, existsKey;
-        StringBuilder sb = new StringBuilder();
-        Map<String, Integer> hm = new HashMap<>();
-        for(int i = 'A'; i <= 'Z'; i++){
-            hm.put(String.valueOf((char)i), i - 'A' + 1);
+        for(char ch = 'A'; ch <= 'Z'; ch++){
+            chMap.put(Character.toString(ch), (int)(ch - 'A' + 1));
         }
-        // System.out.println(hm);
         
-        //String test = "KAKAO";
-        //for(int i = 0; i < test.length(); i++){
-            //System.out.println(test.substring(4, 5));
-        //}
+        char[] message = msg.toCharArray();        
+        StringBuilder sb = new StringBuilder();        
         
-        while(msg_idx < msg.length() && cursor < msg.length()){
-            key = msg.substring(msg_idx, msg_idx + 1);
-            while(hm.containsKey(key) && cursor < msg.length() ){                
-                cursor++;                
-                key += msg.substring(cursor, Math.min(cursor+1, msg.length()));                                            
+        int idx = 0;
+        
+        while(idx < msg.length()){
+            sb.setLength(0);
+            sb.append(message[idx]);
+            int nextIdx = idx + 1;
+            
+            while(nextIdx < msg.length()){
+                sb.append(message[nextIdx]);
                 
-            }
-            System.out.println(key);
-            if(!hm.containsKey(key)){
-                if(key.length() > 1) {
-                    //System.out.println(key.substring(0, key.length() - 1));
-                    answer.add(hm.get(key.substring(0, key.length() - 1)));
-                } else{
-                    //System.out.println(key);
-                    answer.add(hm.get(key));
+                if(chMap.containsKey(sb.toString())){
+                    nextIdx++;
+                } else {
+                    sb.setLength(sb.length() - 1);
+                    break;
                 }
-                hm.put(key, hm_idx + 2);
-                //System.out.println(hm);
-                hm_idx++;
-            } else {
-                answer.add(hm.get(key));
             }
-            msg_idx = cursor;
-        } 
-        // System.out.println(hm);
-        // System.out.println(answer);
-        
-        int[] answers = new int[answer.size()];
-        for(int i = 0; i < answer.size(); i++){
-            answers[i] = answer.get(i);
+            
+            resultList.add(chMap.get( sb.toString()) );
+            
+            if (nextIdx < msg.length()) {
+                sb.append(message[nextIdx]);
+                chMap.put(sb.toString(), chMap.size() + 1);                
+            }
+            idx = nextIdx;
         }
+                
+      
+        int[] answer = new int[resultList.size()];
+        for(int i=0; i<resultList.size(); i++) answer[i] = resultList.get(i);
         
-        //return answers;
-        return answers;
+        return answer;
     }
-}
+} 
