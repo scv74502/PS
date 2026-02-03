@@ -1,47 +1,54 @@
 class Solution {
-    int maxJoin = 0;
-    int maxPrice = 0;
-    int[] discounts = {10, 20, 30, 40};
-
+    int bestJoined = 0;
+    int bestSales = 0;
+    int[] discountRate = {10, 20, 30, 40};
     public int[] solution(int[][] users, int[] emoticons) {
-        findBest(0, new int[emoticons.length], users, emoticons);
-        return new int[]{maxJoin, maxPrice};
+        findBest(0, users, emoticons, new int[emoticons.length]);
+        int[] answer = {bestJoined, bestSales};
+        return answer;
     }
-
-    private void findBest(int depth, int[] currentDiscounts, int[][] users, int[] emoticons) {
-        if (depth == emoticons.length) {
-            int join = 0;
-            int price = 0;
-
-            for (int[] user : users) {
-                int userRate = user[0];
-                int userLimit = user[1];
-                int total = 0;
-
-                for (int i = 0; i < emoticons.length; i++) {
-                    if (currentDiscounts[i] >= userRate) {
-                        total += emoticons[i] * (100 - currentDiscounts[i]) / 100;
-                    }
-                }
-
-                if (total >= userLimit) join++;
-                else price += total;
-            }
-
-            // 가입자 수가 더 많거나, 가입자 수가 같을 때 금액이 더 크면 갱신
-            if (join > maxJoin) {
-                maxJoin = join;
-                maxPrice = price;
-            } else if (join == maxJoin) {
-                maxPrice = Math.max(maxPrice, price);
-            }
+    
+    public void findBest(int curIdx, int[][] users, int[] emoticons, int[] discountPerEmoticon){
+        if(curIdx == emoticons.length){
+            calculate(curIdx, users, emoticons, discountPerEmoticon);
             return;
+        }                        
+                
+        for(int i = 0; i < 4; i++){
+            // 현재 curIdx번 이모티콘의 할인율 변경
+            discountPerEmoticon[curIdx] = discountRate[i];
+            findBest(curIdx+1, users, emoticons, discountPerEmoticon);
         }
-
-        // 4가지 할인율 적용 (재귀)
-        for (int rate : discounts) {
-            currentDiscounts[depth] = rate;
-            findBest(depth + 1, currentDiscounts, users, emoticons);
+    }
+    
+    public void calculate(int curIdx, int[][] users, int[] emoticons, int[] discountPerEmoticon){
+        int totalJoined = 0;
+        int totalSales = 0;
+        
+        for(int[] user:users){
+            int buyRate = user[0];
+            int buyLimit = user[1];
+            
+            int curSales = 0;
+            
+            for(int i = 0; i < emoticons.length; i++){
+                // 원하는 할인비율보다 낮으면 사지 않음
+                if(discountPerEmoticon[i] >= buyRate) {
+                    curSales += (emoticons[i] * (100 - discountPerEmoticon[i]) / 100);
+                }
+            }
+            
+            // 현재 구매액이 가입기준액 이상이면 가입
+            if(curSales >= buyLimit) totalJoined++;
+            else totalSales += curSales;
         }
+        
+        if(totalJoined > bestJoined){ 
+            bestJoined = totalJoined;
+            bestSales = totalSales; // Joined가 바뀌면 Sales도 바뀌어야 함
+        }
+        else if (totalJoined == bestJoined) bestSales = Math.max(bestSales, totalSales);
+        
+        return;
     }
 }
