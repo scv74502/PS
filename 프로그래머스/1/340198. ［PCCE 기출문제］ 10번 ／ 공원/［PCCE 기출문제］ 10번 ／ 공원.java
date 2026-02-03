@@ -1,36 +1,32 @@
-import java.util.*;
-
 class Solution {
+    int answer = -1;
     public int solution(int[] mats, String[][] park) {
-        Arrays.sort(mats);
-        
-        int rows = park.length;
-        int cols = park[0].length;
-        
-        for (int k = mats.length - 1; k >= 0; k--) {
-            int size = mats[k];
-            
-            for (int i = 0; i <= rows - size; i++) {
-                for (int j = 0; j <= cols - size; j++) {
-                    
-                    if (canPlaceMat(park, i, j, size)) {
-                        return size;
+        for(int mat: mats){
+            int N = park.length;
+            int M = park[0].length;
+
+            for(int i = 0; i <= N - mat; i++){
+                for(int j = 0; j <= M - mat; j++){
+                    if(checkAvailable(mat, park, i, j)) {
+                        answer = Math.max(mat, answer);
+                        continue;
                     }
-                }
-            }
+                }    
+            }            
         }
-        
-        return -1;
+        return answer;
     }
     
-    private boolean canPlaceMat(String[][] park, int r, int c, int size) {
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
-                if (!park[r + i][c + j].equals("-1")) {
-                    return false;
-                }
+    public boolean checkAvailable(int mat, String[][] park, int startR, int startC){
+        int N = park.length;
+        int M = park[0].length;
+                        
+        for(int i = startR; i < startR + mat; i++){
+            for(int j = startC; j < startC + mat; j++){
+                if(!park[i][j].equals("-1")) return false;
             }
         }
+        
         return true;
     }
 }
