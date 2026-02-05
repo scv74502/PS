@@ -13,12 +13,10 @@ class Solution {
             String curSeller = seller[i];
             int curSales = amount[i] * 100;
 
-            // 추천인이 없으며 매출 없으면 종료
+            // 추천인이 없고 매출도 없으면 종료
             while(!curSeller.equals("-") && curSales > 0){
                 String curReference = memberReferenceMap.get(curSeller);
                 int curFee = curSales / 10;
-                
-                // System.out.println(curSeller + curSales + curFee);
                 
                 // 수수료가 0원이면 트리 상향 중단
                 if(curFee == 0){
@@ -28,17 +26,10 @@ class Solution {
                     
                 // 수수료가 있으므로 차감 후 판매액 지급
                 memberSalesMap.put(curSeller, memberSalesMap.get(curSeller) + curSales - curFee);                                                   
-                
-                // 수수료도 있고 추천인도 있으면 추천인에게 수수료 지급
-                // if(!curReference.equals("-") && curFee > 0){
-                //     memberSalesMap.put(curReference, memberSalesMap.get(curReference) + curFee);                   
-                // }
-                // if(curSeller.equals("mary")) System.out.println(memberSalesMap);
-                // System.out.println(curSeller + memberSalesMap);
+                                
                 curSeller = curReference;
                 curSales = curFee;                
-            }                        
-            // if(seller[i].equals("john")) System.out.println(memberSalesMap);
+            }                                    
         }
         
         int[] answer = new int[enroll.length];
