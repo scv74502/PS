@@ -1,88 +1,67 @@
 import java.util.*;
 
 class Solution {
-    static int col, row;
+    int[] dr = {-1, 1, 0, 0};
+    int[] dc = {0, 0, -1, 1};
     public int solution(String[] maps) {
-        int answer = 0;
-        col = maps.length;
-        row = maps[0].length();    
-        
-        char[][] charMap = new char[col][row];
-        
-        int startCol = 0;
-        int startRow = 0;
-        int leverCol = 0;
-        int leverRow = 0;
-        int exitCol = 0;
-        int exitRow = 0;
-        
-        for(int i = 0; i < col; i++){
-            for(int j = 0; j < row; j++){                
-                if(maps[i].charAt(j) == 'S'){
-                    startCol = i;
-                    startRow = j;
-                } 
-                
-                if(maps[i].charAt(j) == 'L'){
-                    leverCol = i;
-                    leverRow = j;
-                } 
-                
-                if(maps[i].charAt(j) == 'E'){
-                    exitCol = i;
-                    exitRow = j;
+        int startR = 0, startC = 0;
+        int leverR = 0, leverC = 0;
+        int exitR = 0, exitC = 0;
+            
+        for(int r = 0; r < maps.length; r++){
+            for(int c = 0; c < maps[r].length(); c++){
+                if(maps[r].charAt(c) == 'S'){
+                    startR = r;
+                    startC = c;
+                } else if(maps[r].charAt(c) == 'L'){
+                    leverR = r;
+                    leverC = c;
+                } else if(maps[r].charAt(c) == 'E'){
+                    exitR = r;
+                    exitC = c;
                 }
-                charMap[i][j] = maps[i].charAt(j);
-            }            
-        }
-        
-        answer = bfs(startCol, startRow, leverCol, leverRow, charMap);
-        // System.out.println(answer);
-        if(answer > -1){
-            int temp = bfs(leverCol, leverRow, exitCol, exitRow, charMap);
-            if(temp > -1){
-                answer += temp;
-            } else{
-                answer = temp;
             }
-        }
-        return answer;
+        }                        
+        
+        int startToLever = bfs(startR, startC, leverR, leverC, maps);
+        if(startToLever == -1) return -1;
+        
+        int leverToExit = bfs(leverR, leverC, exitR, exitC, maps);
+        if(leverToExit == -1) return -1;
+        
+        return startToLever + leverToExit;
     }
     
-    public static int bfs(int start_c, int start_r, int dest_c, int dest_r, char[][] map){
-        boolean[][] visited = new boolean[col][row];
+    public int bfs(int startR, int startC, int endR, int endC, String[] maps){
         Queue<int[]> queue = new LinkedList<>();
-        queue.add(new int[] {start_c, start_r, 0});
-        visited[start_c][start_r] = true;
-            
-        int[] mc = new int[] {-1, 1, 0, 0};
-        int[] mr = new int[] {0, 0, -1, 1};
-        int cc, cr, cd, nc, nr;
+        queue.add(new int[] {startR, startC, 0});
+        
+        int R = maps.length;
+        int C = maps[0].length();
+        
+        boolean[][] visited = new boolean[R][C];
+        visited[startR][startC] = true;
         
         while(!queue.isEmpty()){
-            cc = queue.peek()[0];
-            cr = queue.peek()[1];
-            cd = queue.peek()[2];
+            int curR = queue.peek()[0];
+            int curC = queue.peek()[1];
+            int curD = queue.peek()[2];
             queue.poll();
             
-            if(cc == dest_c && cr == dest_r){
-                return cd;
+            if(curR == endR && curC == endC){
+                return curD;
             }
             
-            for(int mv = 0; mv < 4; mv++){
-                nc = cc + mc[mv];
-                nr = cr + mr[mv];
+            for(int d = 0; d < 4; d++){
+                int nextR = curR + dr[d];
+                int nextC = curC + dc[d];
                 
-                if(nc < 0 || col <= nc || nr < 0 || row <= nr){
-                    continue;
-                }
-                
-                if(map[nc][nr] != 'X' && !visited[nc][nr]){
-                    visited[nc][nr] = true;
-                    queue.add(new int[] {nc, nr, cd+1});
-                }
+                if(nextR < 0 || R <= nextR || nextC < 0 || C <= nextC || maps[nextR].charAt(nextC) == 'X'|| visited[nextR][nextC]) continue;
+                queue.add(new int[] {nextR, nextC, curD + 1});
+                visited[nextR][nextC] = true;
             }
         }
+        
         return -1;
     }
 }
