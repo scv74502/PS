@@ -1,49 +1,56 @@
 import java.util.*;
 
-class Solution {    
-    // 가입자 - 추천인 관계 저장한 맵
-    HashMap<String, String> referralMap = new HashMap<>();
-    
-    // 조직원 - 이익 관계 저장한 맵
+class Solution {
+    HashMap<String, String> memberReferenceMap = new HashMap<>();
     HashMap<String, Integer> memberSalesMap = new HashMap<>();
-    
     public int[] solution(String[] enroll, String[] referral, String[] seller, int[] amount) {
         for(int i = 0; i < enroll.length; i++){
-            referralMap.put(enroll[i], referral[i]);
+            memberReferenceMap.put(enroll[i], referral[i]);
             memberSalesMap.put(enroll[i], 0);
-        }                
+        }
         
-       for(int i = 0; i < seller.length; i++){
+        for(int i = 0; i < seller.length; i++){
             String curSeller = seller[i];
-            int totalSales = amount[i] * 100;
-            
-            while (!curSeller.equals("-") && totalSales > 0) {
-                int fee = totalSales / 10;
-                int memberProfit = totalSales - fee;
-                
-                memberSalesMap.put(curSeller, memberSalesMap.get(curSeller) + memberProfit);
-                
-                totalSales = fee;
-                curSeller = referralMap.get(curSeller);
-                
-                if (totalSales < 1) break;
-            }
-        }
+            int curSales = amount[i] * 100;
 
-        int[] answer = new int[enroll.length];
-        for(int i = 0; i < enroll.length; i++){
-            answer[i] = memberSalesMap.get(enroll[i]);
+            // 추천인이 없으며 매출 없으면 종료
+            while(!curSeller.equals("-") && curSales > 0){
+                String curReference = memberReferenceMap.get(curSeller);
+                int curFee = curSales / 10;
+                
+                // System.out.println(curSeller + curSales + curFee);
+                
+                // 수수료가 0원이면 트리 상향 중단
+                if(curFee == 0){
+                    memberSalesMap.put(curSeller, memberSalesMap.get(curSeller) + curSales);
+                    break;
+                }
+                    
+                // 수수료가 있으므로 차감 후 판매액 지급
+                memberSalesMap.put(curSeller, memberSalesMap.get(curSeller) + curSales - curFee);                                                   
+                
+                // 수수료도 있고 추천인도 있으면 추천인에게 수수료 지급
+                // if(!curReference.equals("-") && curFee > 0){
+                //     memberSalesMap.put(curReference, memberSalesMap.get(curReference) + curFee);                   
+                // }
+                // if(curSeller.equals("mary")) System.out.println(memberSalesMap);
+                // System.out.println(curSeller + memberSalesMap);
+                curSeller = curReference;
+                curSales = curFee;                
+            }                        
+            // if(seller[i].equals("john")) System.out.println(memberSalesMap);
         }
+        
+        int[] answer = new int[enroll.length];
+        
+        for(int i = 0; i < enroll.length; i++){                
+            answer[i] = memberSalesMap.get(enroll[i]);
+        }            
         
         return answer;
     }
     
-    // 수수료 제공 함수
-    public int calcFee(int sales){
-        // 수수류가 1원 미만이면 상납 안함
-        if(sales < 10) return 0;
-        
-        int result = (int)Math.ceil((float)sales * 0.1);        
-        return result;
+    public int getFee(int sales){
+        return sales / 10;
     }
 }
