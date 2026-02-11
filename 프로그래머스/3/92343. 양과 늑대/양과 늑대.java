@@ -4,47 +4,44 @@ class Solution {
     public int solution(int[] info, int[][] edges) {
         int answer = 0;
         
-        ArrayList<Integer>[] graph = new ArrayList[info.length];        
-        
+        ArrayList<Integer>[] graph = new ArrayList[info.length];
         for(int i = 0; i < info.length; i++){
             graph[i] = new ArrayList<>();
         }
         
         for(int[] edge: edges){
             graph[edge[0]].add(edge[1]);
-        }                
+        }
         
         Deque<Info> deque = new ArrayDeque<>();
-        deque.add(new Info(0, 1, 0, new HashSet<>()));  // 시작은 0부터
+        deque.add(new Info(0, 1, 0, new HashSet<>()));
         
-        // visited는 최근 방문 기록, 중복체크가 아닌 다음 노드 탐색할 위치
         while(!deque.isEmpty()){
-            System.out.println(deque.peek());
             int curLoc = deque.peek().location;
-            int curSheep = deque.peek().sheepCnt;
-            int curWolf = deque.peek().wolfCnt;
-            answer = Math.max(answer, curSheep);
-            HashSet<Integer> curVisited = new HashSet<>(deque.peek().visited);
+            int curSheep = deque.peek().sheep;
+            int curWolf = deque.peek().wolf;
+            HashSet<Integer> visited = deque.peek().visited;
             deque.poll();
             
-            // 현재 마지막 방문지역의 하위 노드 방문처리 
-            for(int childLoc: graph[curLoc]){
-                curVisited.add(childLoc);
+            // 모든 경우의 양 마리수 최대화
+            answer = Math.max(answer, curSheep);
+            
+            // 현재 위치에 자식 정점을 다음 방문 포인트에 추가
+            for(int childNodeLoc: graph[curLoc]){
+                visited.add(childNodeLoc);
             }
             
-            // 마지막 방문지역으로부터 현재 방문할 노드들 탐색
-            for(int nextLoc: curVisited){
-                if(info[nextLoc] == 0){ // 다음 노드에 양이 있다면
-                    HashSet<Integer> nextVisited = new HashSet<>(curVisited);
-                    nextVisited.remove(nextLoc);
-                    deque.add(new Info(nextLoc, curSheep + 1, curWolf, nextVisited));
-                }
-                
-                if(info[nextLoc] == 1){ // 다음 노드에 늑대가 있다면
+            // 방문 예정 포인트들 체크 
+            for(int nextLoc: visited) {                
+                if(info[nextLoc] == 0){
+                    HashSet<Integer> nextVisit = new HashSet<>(visited);
+                    nextVisit.remove(nextLoc);
+                    deque.add(new Info(nextLoc, curSheep + 1, curWolf, nextVisit));
+                } else {
                     if(curSheep > curWolf + 1){
-                        HashSet<Integer> nextVisited = new HashSet<>(curVisited);
-                        nextVisited.remove(nextLoc);
-                        deque.add(new Info(nextLoc, curSheep, curWolf + 1, nextVisited));
+                        HashSet<Integer> nextVisit = new HashSet<>(visited);
+                        nextVisit.remove(nextLoc);
+                        deque.add(new Info(nextLoc, curSheep, curWolf + 1, nextVisit));
                     }
                 }
             }
@@ -57,19 +54,14 @@ class Solution {
 
 class Info{
     int location;
-    int sheepCnt;
-    int wolfCnt;
+    int sheep;
+    int wolf;
     HashSet<Integer> visited;
     
-    public Info(int location, int sheepCnt, int wolfCnt, HashSet<Integer> visited){
+    public Info(int location, int sheep, int wolf, HashSet<Integer> visited) {
         this.location = location;
-        this.sheepCnt = sheepCnt;
-        this.wolfCnt = wolfCnt;
+        this.sheep = sheep;
+        this.wolf = wolf;
         this.visited = visited;
     }
-    
-    // @Override
-    // public String toString(){
-    //     return "location: " + location + ", sheelCnt: " + sheepCnt + ", wolfCnt: " + wolfCnt + "\nvisited: " + visited + "\n";
-    // }
 }
