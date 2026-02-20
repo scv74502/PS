@@ -3,78 +3,56 @@ import java.util.*;
 class Solution {
     public int solution(int N, int[][] road, int K) {
         int answer = 0;
-        int[] distance = new int[N+1];
-        Arrays.fill(distance, Integer.MAX_VALUE);
-        distance[1] = 0;
+        int[] distanceArr = new int[N+1];
+        Arrays.fill(distanceArr, Integer.MAX_VALUE);
+        distanceArr[1] = 0;
         
-        PriorityQueue<int[]> pq = new PriorityQueue<>(new Comparator<int[]>(){
+        int[][] graph = new int[N + 1][N + 1];
+        for(int i = 0; i <= N; i++){
+            Arrays.fill(graph[i], Integer.MAX_VALUE);
+        }
+        
+        for(int[] edge: road){
+            int u = edge[0];
+            int v = edge[1];
+            int dist = edge[2];
+            
+            graph[u][v] = Math.min(graph[u][v], dist);
+            graph[v][u] = Math.min(graph[v][u], dist);
+        }
+        
+        PriorityQueue<int[]> pq = new PriorityQueue<>(new Comparator<int[]>() {
             @Override
             public int compare(int[] o1, int[] o2){
-                if(o1[0] != o2[0]){
-                    return o1[0] - o2[0];
-                }
-                return o1[1] - o2[1];
-            }
-        });
-        
-        Arrays.sort(road, new Comparator<int[]>(){
-            @Override
-            public int compare(int[] o1, int[] o2){            
                 return o1[0] - o2[0];
             }
         });
         
-        ArrayList<ArrayList<int[]>> graph = new ArrayList<>();
-        
-        for(int i = 0; i <= N; i++){
-            graph.add(new ArrayList<int[]>());
-        }
-        
-        // System.out.println(graph.size());
-        
-        int u, v, time;
-        for(int[] vertex:road){
-            u = vertex[0];
-            v = vertex[1];
-            time = vertex[2];
-            
-            graph.get(u).add(new int[] {time, v});
-            graph.get(v).add(new int[] {time, u});
-        }
-        // System.out.println("graph done");
-        // 0번이 시간, 1번이 정점
-        int[] cur;
-        
-        pq.offer(new int[] {0, 1});
-        
-        int curCost, curNode, nextCost, nextNode;
+        // 다익스트라로 1번과 각 정점 최단거리
+        int start = 1;
+        pq.add(new int[] {distanceArr[1], 1});  // [현재 거리, 현재 정점]
         while(!pq.isEmpty()){
-            cur = pq.poll();
-            curCost = cur[0];
-            curNode = cur[1];
+            int curDist = pq.peek()[0];
+            int cur = pq.peek()[1];            
+            pq.poll();
             
-            for(int[] next:graph.get(curNode)){
-                nextCost = next[0];
-                nextNode = next[1];
-                
-                if(distance[curNode] + nextCost < distance[nextNode]){
-                    // System.out.println("nextNode");
-                    distance[nextNode] = distance[curNode] + nextCost;
-                    pq.offer(new int[] {distance[curNode] + nextCost, nextNode});
-                }                       
+            if(distanceArr[cur] < curDist) continue; // 최적화
+
+            for(int next = 1; next <= N; next++){
+                if(graph[cur][next] == Integer.MAX_VALUE) continue;
+
+                int cost = curDist + graph[cur][next];
+                if(cost < distanceArr[next]){
+                    distanceArr[next] = cost;
+                    pq.add(new int[] {cost, next});
+                }
             }
         }
-        
-
-        // [실행] 버튼을 누르면 출력 값을 볼 수 있습니다.
-        // System.out.println(Arrays.toString(distance));
         
         for(int i = 1; i <= N; i++){
-            if(distance[i] <= K){
-                answer++;
-            }
+            if(distanceArr[i] <= K) answer++;
         }
-
+        
         return answer;
     }
 }
