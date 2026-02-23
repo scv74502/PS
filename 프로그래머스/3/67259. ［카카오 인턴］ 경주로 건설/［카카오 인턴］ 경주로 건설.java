@@ -39,19 +39,17 @@ class Solution {
                 int nc = cc + dc[d];            
                 
                 if(nr < 0 || N <= nr || nc < 0 || N <= nc || board[nr][nc] == 1) continue;
-                                
+                    
+                int nextPrice = 0;
                 if((d < 2 && (curDirection == 0 || curDirection == 1)) || (2 <= d && (curDirection == 2 || curDirection == 3))){
-                    int nextPrice = curPrice + 100;
-                    if(nextPrice <= priceArr[nr][nc][d]){
-                        priceArr[nr][nc][d] = nextPrice;
-                        deque.add(new int[] {nr, nc, nextPrice, d});
-                    }
+                    nextPrice = curPrice + 100;                    
                 } else {
-                    int nextPrice = curPrice + 600;
-                    if(nextPrice <= priceArr[nr][nc][d]){
-                        priceArr[nr][nc][d] = nextPrice;                        
-                        deque.add(new int[] {nr, nc, nextPrice, d});
-                    }
+                    nextPrice = curPrice + 600;                    
+                }
+                
+                if(nextPrice <= priceArr[nr][nc][d]){
+                    priceArr[nr][nc][d] = nextPrice;
+                    deque.add(new int[] {nr, nc, nextPrice, d});
                 }
             }                    
         }
