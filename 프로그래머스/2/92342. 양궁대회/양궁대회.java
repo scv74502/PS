@@ -1,58 +1,64 @@
+import java.util.*;
+
 class Solution {
-    int[] answer = {};
     int maxDiff = -1;
+    int[] answer;
     public int[] solution(int n, int[] info) {
-        int[] record = new int[info.length];
-        bt(n, 0, info, record);    
-        if(maxDiff == -1) return new int[] {-1};
+        answer = new int[11];
+        int[] lionRecord = new int[11];
+        bt(n, 0, lionRecord, info);
+        if(maxDiff == -1) return new int[] {-1};        
         return answer;
     }
     
-    public void bt(int leftArrow, int idx, int[] apeach, int[] lion){
-        // 마지막 인덱스(0점)에서 남은 화살 모두 소모
-        if (idx == 10) {
-            lion[10] += leftArrow; 
-            int diff = calcDiff(apeach, lion);
-            if (diff > 0 && diff >= maxDiff) {
-                if (maxDiff < diff) {
-                    maxDiff = diff;
-                    answer = lion.clone();
-                } else {
-                    answer = moreLowScore(answer, lion).clone();
+    // 남은 화살, 몇점 계산 중인지 체크하는 idx, 라이온의 기록, 어피치의 기록
+    public void bt(int leftArrow, int idx, int[] lionRecord, int[] info){
+        if(idx == 10){
+            lionRecord[10] += leftArrow;    // 낮은 점수를 최대한 쏘는 쪽이 유리하므로 0점에 남은 화살 몰아주기
+            int curDiff = getDiff(lionRecord, info);                                                            
+            
+            if(curDiff <= 0){
+                lionRecord[10] -= leftArrow;
+                return;
+            }                        
+            
+            if(curDiff > maxDiff){                
+                maxDiff = curDiff;
+                answer = lionRecord.clone();
+            } else if (curDiff == maxDiff){
+                for(int i = 10; i >= 0; i--){
+                    if(answer[i] > lionRecord[i]){
+                        break;
+                    } else if(answer[i] < lionRecord[i]){
+                        answer = lionRecord.clone();
+                        break;
+                    }
                 }
             }
-            lion[10] -= leftArrow; // 복구
+            
+            lionRecord[10] -= leftArrow;
             return;
         }
         
-        for(int i = 0; i <= leftArrow; i++){            
-            lion[idx] += i;
-            bt(leftArrow - i, idx + 1, apeach, lion);
-            lion[idx] -= i;            
-        }        
+        for(int j = 0; j <= leftArrow; j++){
+            lionRecord[idx] += j;            
+            bt(leftArrow - j, idx + 1, lionRecord, info);
+            lionRecord[idx] -= j;
+        }                                
     }
     
-    public int calcDiff(int[] apeach, int[] lion){
-        int apeachScore = 0;
+    public int getDiff(int[] lionRecord, int[] info){
         int lionScore = 0;
-        for (int i = 0; i <= 10; i++) {
-            if (apeach[i] == 0 && lion[i] == 0) continue; 
-            if (apeach[i] >= lion[i]) {
-                apeachScore += (10 - i);
+        int apeachScore = 0;
+        
+        for(int i = 0; i <= 10; i++){
+            if(lionRecord[i] == 0 && info[i] == 0) continue;
+            if(lionRecord[i] > info[i]){
+                lionScore += 10 - i;
             } else {
-                lionScore += (10 - i);
+                apeachScore += 10 - i;
             }
         }
-        
         return lionScore - apeachScore;
-    }
-    
-    public int[] moreLowScore(int[] answer, int[] lion){
-        for(int i = 10; i >= 0; i--) {
-            if (lion[i] > answer[i]) return lion;
-            else if (lion[i] < answer[i]) return answer;
-        }
-        // 두 배열이 같은 경우
-        return answer;
     }
 }
