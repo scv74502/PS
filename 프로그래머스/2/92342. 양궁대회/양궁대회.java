@@ -1,64 +1,57 @@
-import java.util.*;
-
 class Solution {
-    int maxDiff = -1;
-    int[] answer;
-    public int[] solution(int n, int[] info) {
-        answer = new int[11];
-        int[] lionRecord = new int[11];
+    final int ARROW_AMOUNT = 10;
+    int maxDiff = 0;
+    int[] answer = new int[ARROW_AMOUNT + 1];
+    public int[] solution(int n, int[] info) {        
+        int[] lionRecord = new int[ARROW_AMOUNT + 1];
         bt(n, 0, lionRecord, info);
-        if(maxDiff == -1) return new int[] {-1};        
+        if(maxDiff == 0) return new int[] {-1};    
         return answer;
     }
     
-    // 남은 화살, 몇점 계산 중인지 체크하는 idx, 라이온의 기록, 어피치의 기록
-    public void bt(int leftArrow, int idx, int[] lionRecord, int[] info){
-        if(idx == 10){
-            lionRecord[10] += leftArrow;    // 낮은 점수를 최대한 쏘는 쪽이 유리하므로 0점에 남은 화살 몰아주기
-            int curDiff = getDiff(lionRecord, info);                                                            
+    public void bt(int leftArrow, int idx, int[] lionRecord, int[] apeachRecord){
+        if(idx == ARROW_AMOUNT + 1){
+            lionRecord[ARROW_AMOUNT] += leftArrow;
+            int curDiff = calcDiff(lionRecord, apeachRecord);
             
-            if(curDiff <= 0){
-                lionRecord[10] -= leftArrow;
-                return;
-            }                        
-            
-            if(curDiff > maxDiff){                
+            if(curDiff > maxDiff){
                 maxDiff = curDiff;
                 answer = lionRecord.clone();
-            } else if (curDiff == maxDiff){
-                for(int i = 10; i >= 0; i--){
-                    if(answer[i] > lionRecord[i]){
-                        break;
-                    } else if(answer[i] < lionRecord[i]){
+            } else if(curDiff == maxDiff){
+                // 점수차 같다면 낮은 점수 많이 맞춘 기록으로 대체
+                for(int i = ARROW_AMOUNT; i >= 0; i--){
+                    if(lionRecord[i] > answer[i]){
                         answer = lionRecord.clone();
                         break;
+                    } else if(lionRecord[i] < answer[i]){
+                        lionRecord[ARROW_AMOUNT] -= leftArrow;
+                        return;
                     }
                 }
             }
             
-            lionRecord[10] -= leftArrow;
+            lionRecord[ARROW_AMOUNT] -= leftArrow;
             return;
         }
         
-        for(int j = 0; j <= leftArrow; j++){
-            lionRecord[idx] += j;            
-            bt(leftArrow - j, idx + 1, lionRecord, info);
-            lionRecord[idx] -= j;
-        }                                
+        for(int i = 0; i <= leftArrow; i++){
+            lionRecord[idx] += i;
+            bt(leftArrow - i, idx + 1, lionRecord, apeachRecord);
+            lionRecord[idx] -= i;
+        }
     }
     
-    public int getDiff(int[] lionRecord, int[] info){
-        int lionScore = 0;
-        int apeachScore = 0;
-        
-        for(int i = 0; i <= 10; i++){
-            if(lionRecord[i] == 0 && info[i] == 0) continue;
-            if(lionRecord[i] > info[i]){
-                lionScore += 10 - i;
+    public int calcDiff(int[] lionRecord, int[] apeachRecord){
+        int lion = 0;
+        int apeach = 0;
+        for(int i = ARROW_AMOUNT; i >= 0; i--){
+            if(lionRecord[i] == 0 && apeachRecord[i] == 0) continue;
+            else if(lionRecord[i] > apeachRecord[i]){
+                lion += (ARROW_AMOUNT - i);
             } else {
-                apeachScore += 10 - i;
+                apeach += (ARROW_AMOUNT - i);
             }
         }
-        return lionScore - apeachScore;
+        return lion - apeach;
     }
 }
