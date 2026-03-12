@@ -9,42 +9,40 @@ class Solution {
     }
     
     public void bt(int leftArrow, int idx, int[] lionRecord, int[] apeachRecord){
-        if(idx == 11){
+        if (idx == 11) {
             lionRecord[10] += leftArrow;
             int diff = calcDiff(lionRecord, apeachRecord);
-            
-            if(diff > maxDiff){
-                maxDiff = diff;
-                answer = lionRecord.clone();                                    
-                lionRecord[10] -= leftArrow;
-                return;
-            } else if(diff == maxDiff){
-                // 낮은 점수가 많은 쪽
-                for(int i = 10; i >= 0; i--){                    
-                    if(lionRecord[i] == 0 && answer[i] == 0) continue;
-                    else if(lionRecord[i] > answer[i]){
-                        answer = lionRecord.clone();                
-                        lionRecord[10] -= leftArrow;
-                        return;
-                    } else{
-                        lionRecord[10] -= leftArrow;
-                        return;
-                    }
+            if (diff > 0 && diff >= maxDiff) {
+                if (diff > maxDiff || isBetter(lionRecord)) {
+                    maxDiff = diff;
+                    answer = lionRecord.clone();
                 }
             }
-            
             lionRecord[10] -= leftArrow;
             return;
-        }        
-        
-        for(int i = 0; i <= leftArrow; i++){
-            lionRecord[idx] += i;
-            bt(leftArrow - i, idx + 1, lionRecord, apeachRecord);
-            lionRecord[idx] -= i;
         }
+        
+        int required = apeachRecord[idx] + 1;
+        if (leftArrow >= required) {
+            lionRecord[idx] = required;
+            bt(leftArrow - required, idx + 1, lionRecord, apeachRecord);
+            lionRecord[idx] = 0;
+        }
+        
+        // 어피치가 0발이어도 라이언이 0발 쏘면 점수 못 얻으므로 로직상 안전함
+        bt(leftArrow, idx + 1, lionRecord, apeachRecord);
     }
     
-    public int calcDiff(int[] lionRecord, int[] apeachRecord){
+    // 낮은 점수 화살이 더 많은지 체크
+    private boolean isBetter(int[] lionRecord) {
+        for (int i = 10; i >= 0; i--) {
+            if (lionRecord[i] > answer[i]) return true;
+            if (lionRecord[i] < answer[i]) return false;
+        }
+        return false;
+    }
+    
+    private int calcDiff(int[] lionRecord, int[] apeachRecord){
         int lion = 0;
         int apeach = 0;
         for(int i = 10; i >= 0; i--){
