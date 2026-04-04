@@ -1,16 +1,16 @@
 import java.io.*;
-import java.util.ArrayDeque;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.StringTokenizer;
 
 public class Main {
     static int N;
     static char[][] map;
     static boolean result = false;
-    static ArrayDeque<int[]> teachers = new ArrayDeque<>();
+    // 변경: 큐 대신 리스트를 사용하여 단순 데이터 보관 및 순회에 최적화
+    static ArrayList<int[]> teachers = new ArrayList<>();
+
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
         N = Integer.parseInt(br.readLine());
         map = new char[N][N];
 
@@ -22,6 +22,7 @@ public class Main {
             }
         }
 
+        // 1차원 인덱스 기준 탐색 시작점 0 전달
         bt(0, 0, 0);
 
         System.out.println(result ? "YES" : "NO");
@@ -43,31 +44,29 @@ public class Main {
         }
     }
 
-    public static boolean check(){
-        int size = teachers.size();
-
-        for (int i = 0; i < size; i++) {
-            int tr = teachers.peek()[0];
-            int tc = teachers.peek()[1];
-            teachers.add(teachers.poll());
+    public static boolean check() {
+        // 리스트를 순회하며 각 선생님의 위치에서 검사
+        for (int[] teacher : teachers) {
+            int tr = teacher[0];
+            int tc = teacher[1];
 
             for (int j = tc + 1; j < N; j++) {
-                if(map[tr][j] == 'T' ||map[tr][j] == 'B') break;
+                if(map[tr][j] == 'B') break;
                 if(map[tr][j] == 'S') return false;
             }
 
             for (int j = tc - 1; j >= 0; j--) {
-                if(map[tr][j] == 'T' ||map[tr][j] == 'B') break;
+                if(map[tr][j] == 'B') break;
                 if(map[tr][j] == 'S') return false;
             }
 
             for (int j = tr + 1; j < N; j++) {
-                if(map[j][tc] == 'T' ||map[j][tc] == 'B') break;
+                if(map[j][tc] == 'B') break;
                 if(map[j][tc] == 'S') return false;
             }
 
             for (int j = tr - 1; j >= 0; j--) {
-                if(map[j][tc] == 'T' ||map[j][tc] == 'B') break;
+                if(map[j][tc] == 'B') break;
                 if(map[j][tc] == 'S') return false;
             }
         }
