@@ -6,13 +6,13 @@ public class Main {
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
         int rpt = Integer.parseInt(br.readLine());
         final int DIVIDER = 1_000_000_009;
-        long[] dp = new long[1_000_001];
+        int[] dp = new int[1_000_001];
         dp[1] = 1;
         dp[2] = 2;
         dp[3] = 4;
 
         for (int i = 4; i < dp.length; i++) {
-            dp[i] = (dp[i - 1] + dp[i - 2] + dp[i - 3]) % DIVIDER;
+            dp[i] = (int) (((long) dp[i - 1] + dp[i - 2] + dp[i - 3]) % DIVIDER);
         }
 
         for (int i = 0; i < rpt; i++) {
