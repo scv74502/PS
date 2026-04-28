@@ -5,15 +5,13 @@ class Solution {
         final int DIVIDER = 1_000_000_007;
         int[] dp = new int[n + 1];
         dp[0] = 1;
-        Arrays.sort(money);
         
-        for(int i = 0; i < money.length; i++){
-            int curMoney = money[i];
-            for(int j = curMoney; j <= n; j++){
-                dp[j] = (dp[j] + dp[j - curMoney]) % DIVIDER;
+        for(int cur:money){
+            for(int i = cur; i <= n; i++){
+                dp[i] += dp[i - cur];
             }
         }
-                      
+        
         return dp[n];
     }
 }
