@@ -1,42 +1,39 @@
 class Solution {
-    static boolean[] visited;
-    static int MAX_TURN = Integer.MAX_VALUE;
-    public int solution(String begin, String target, String[] words) {
-        visited = new boolean[words.length];        
-        for(int i = 0; i < words.length; i++){
-            if(words[i].equals(begin)){
-                visited[i] = true;
-                break;
-            }
-        }
-        bt(begin, target, words, 0);
-        return MAX_TURN == Integer.MAX_VALUE ? 0 : MAX_TURN;
+    private int minDepth = Integer.MAX_VALUE;
+
+    public int solution(String begin, String target, String[] words) {        
+        minDepth = Integer.MAX_VALUE;
+        boolean[] visited = new boolean[words.length];        
+        bt(begin, target, words, visited, 0);        
+        return minDepth == Integer.MAX_VALUE ? 0 : minDepth;
     }
     
-    public void bt(String current, String target, String[] words, int depth) {
-        if(current.equals(target) || depth == words.length){
-            if(depth < words.length) MAX_TURN = Math.min(MAX_TURN, depth);
+    private void bt(String current, String target, String[] words, boolean[] visited, int depth) {
+        // 가지치기, 현재 깊이가 이미 최솟값보다 크면 중단
+        if (depth >= minDepth) return;
+        
+        if (current.equals(target)) {
+            minDepth = depth;
             return;
         }        
         
-        for(int i = 0; i < words.length; i++){
-            String next = words[i];
-            if(!visited[i] && isPossible(current, next)){
+        for (int i = 0; i < words.length; i++) {
+            if (!visited[i] && isPossible(current, words[i])) {
                 visited[i] = true;
-                bt(next, target, words, depth + 1);
+                bt(words[i], target, words, visited, depth + 1);
                 visited[i] = false;
             } 
         }
     }    
     
-    public boolean isPossible(String a, String b){
+    private boolean isPossible(String a, String b) {
         int diff = 0;
-        for(int i = 0; i < a.length(); i++){
-            if(a.charAt(i) != b.charAt(i)){
+        for (int i = 0; i < a.length(); i++) {
+            if (a.charAt(i) != b.charAt(i)) {
                 diff++;
-                if(diff > 1) return false;
-            }            
+            }
+            if (diff > 1) return false;
         }
-        return true;
+        return diff == 1;
     }
 }
