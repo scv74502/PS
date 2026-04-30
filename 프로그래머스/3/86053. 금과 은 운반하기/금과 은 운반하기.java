@@ -13,7 +13,7 @@ class Solution {
             long mid = (left + right) / 2;
             if(isPossible(mid, a, b, g, s, w, t)) {
                 right = mid - 1;
-                answer = right;
+                answer = mid;
             } else {
                 left = mid + 1;
             }
@@ -29,7 +29,7 @@ class Solution {
         
         for(int i = 0; i < g.length; i++) {
             long moveCnt = time / (t[i] * 2);
-            if(time % (t[i] * 2) > t[i]) moveCnt++;
+            if(time % (t[i] * 2) >= t[i]) moveCnt++;
             
             long maxPayload = moveCnt * w[i];
             
