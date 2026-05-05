@@ -14,26 +14,26 @@ class Solution {
         int crewIdx = 0;
         
         for(int i = 0; i < n; i++) {
-            int curBusRemain = m;
-            int lastCrewTime = 0;
-            
-            while(crewIdx < convertedTime.length && convertedTime[crewIdx] <= curTime && 0 < curBusRemain){
-                curBusRemain--;
+            int crewOnBus = 0;
+            int lastCrewTime = -1;
+            while(crewIdx < convertedTime.length && convertedTime[crewIdx] <= curTime && crewOnBus < m) {
                 lastCrewTime = convertedTime[crewIdx];
+                crewOnBus++;
                 crewIdx++;
             }
             
-            // 마지막 버스면
+            // System.out.println("crewIdx:" + crewIdx);
+            
+            // 현재 마지막 버스라면
             if(i == n - 1) {
-                if(curBusRemain > 0) {
-                    return toStringTime(curTime);
-                } else {
-                    return toStringTime(lastCrewTime - 1);
+                // System.out.println(curTime + ", crewIdx:" + crewIdx + ", crewOnBus:" + crewOnBus);
+                if(crewOnBus < m) return toStringTime(curTime);
+                else {
+                    return toStringTime(lastCrewTime - 1);   
                 }
             }
-            
             curTime += t;
-        }             
+        }
         
         return "";
     }
