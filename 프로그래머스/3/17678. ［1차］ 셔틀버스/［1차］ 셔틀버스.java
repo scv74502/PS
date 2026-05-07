@@ -9,29 +9,24 @@ class Solution {
         
         Arrays.sort(convertedTime);        
         
-        // 9시인 540분부터 버스 태우기 시뮬레이션
-        int curTime = 540;
-        int crewIdx = 0;
         
-        for(int i = 0; i < n; i++) {
+        int crewIdx = 0;
+        int curTime = 540;
+        
+        for(int i = 0; i < n; i++){
             int crewOnBus = 0;
-            int lastCrewTime = -1;
-            while(crewIdx < convertedTime.length && convertedTime[crewIdx] <= curTime && crewOnBus < m) {
+            int lastCrewTime = 0;            
+            while(crewIdx < convertedTime.length && convertedTime[crewIdx] <= curTime && crewOnBus < m){
                 lastCrewTime = convertedTime[crewIdx];
                 crewOnBus++;
                 crewIdx++;
             }
             
-            // System.out.println("crewIdx:" + crewIdx);
-            
-            // 현재 마지막 버스라면
             if(i == n - 1) {
-                // System.out.println(curTime + ", crewIdx:" + crewIdx + ", crewOnBus:" + crewOnBus);
                 if(crewOnBus < m) return toStringTime(curTime);
-                else {
-                    return toStringTime(lastCrewTime - 1);   
-                }
+                else return toStringTime(lastCrewTime - 1);
             }
+            
             curTime += t;
         }
         
